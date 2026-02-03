@@ -1,0 +1,13 @@
+enabled: false
+database:
+  blue:
+    region: eu-west-1
+  green:
+    region: eu-west-1
+search:
+  region: eu-west-1
+storage:
+  green:
+    region: eu-west-1
+  blue:
+    region: eu-west-1
