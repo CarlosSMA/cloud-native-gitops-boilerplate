@@ -3,6 +3,8 @@ liferay-aws-backup-restore:
 liferay-default:
     configmap:
         data:
+            test.test: |
+                test=test
             com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config: |
                 accessKey=""
                 bucketName="$[env:S3_BUCKET_ID]"
