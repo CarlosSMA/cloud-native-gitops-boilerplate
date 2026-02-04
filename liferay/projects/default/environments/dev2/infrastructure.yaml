@@ -1,4 +1,4 @@
-enabled: true
+enabled: false
 database:
   blue:
     region: eu-west-1
@@ -11,4 +11,5 @@ storage:
     region: eu-west-1
   blue:
     region: eu-west-1
+
 
