@@ -1,5 +1,5 @@
-enabled: false
 liferay-default:
+  enabled: false
   image:
     tag: 2025.q1.20-lts
   replicaCount: 1
