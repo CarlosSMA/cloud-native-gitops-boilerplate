@@ -21,14 +21,14 @@ liferay-default:
             <max-http-sessions>10</max-http-sessions>
             <key>4285954c72efdc3032883ce125e7fc07d2792b4f2d4b719622221ce68b5997c4c14a39bfd24457beb8742c66566dff8a326159354238f8afc70a62fe1633e6ea117c79e558917ea0cfdadee801a98cd9b5d40e8948c05a12a4f6405e08af273dbb5607a4dda22f1c40026cc47509a21d20f9352561ee044c83246736ba39f625bd58ca70</key>
         </license>
-      com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config: |
-        username="elastic"
-        password="nhx6sAIo47g5h4AvzXETvhk8"
-        active=B"true"
-        authenticationEnabled=B"true"
-        connectionId="REMOTE"
-        httpSSLEnabled=B"false"
-        networkHostAddresses=["https://elasticsearch-es-http.elastic-system.svc.cluster.local:9200"]
+      # com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config: |
+      #   username="elastic"
+      #   password="nhx6sAIo47g5h4AvzXETvhk8"
+      #   active=B"true"
+      #   authenticationEnabled=B"true"
+      #   connectionId="REMOTE"
+      #   httpSSLEnabled=B"false"
+      #   networkHostAddresses=["https://elasticsearch-es-http.elastic-system.svc.cluster.local:9200"]
       com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config: |
         accessKey=""
         bucketName="$[env:S3_BUCKET_ID]"
