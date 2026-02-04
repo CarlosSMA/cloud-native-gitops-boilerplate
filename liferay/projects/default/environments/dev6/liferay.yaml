@@ -38,9 +38,9 @@ liferay-default:
         secretKey=""
   customVolumeMounts:
     x-liferay-aws:
-      -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
-          name: liferay-configmap
-          subPath: com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
+      # -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
+      #     name: liferay-configmap
+      #     subPath: com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
       -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config
           name: liferay-configmap
           subPath: com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config
