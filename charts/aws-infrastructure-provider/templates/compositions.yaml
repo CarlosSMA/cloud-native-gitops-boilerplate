@@ -584,7 +584,6 @@ spec:
                             {{- end -}}
                         {{- end -}}
 
-                        {{- if and $databaseAddress $databasePassword $searchEndpoint $storageName }}
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
@@ -624,7 +623,6 @@ spec:
                                         S3_BUCKET_REGION: {{ $storage.resource.spec.forProvider.region | toString }}
                                     type: Opaque
                             managementPolicies: {{ $managementPolicies }}
-                        {{- end }}
                         `}}
                 kind: GoTemplate
                 source: Inline
