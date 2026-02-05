@@ -1,4 +1,4 @@
-enabled: true
+enabled: false
 database:
   blue:
     region: eu-west-1
