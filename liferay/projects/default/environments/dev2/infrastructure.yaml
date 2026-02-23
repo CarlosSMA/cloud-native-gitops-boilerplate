@@ -13,3 +13,4 @@ storage:
         region: us-east-2
 backup:
     enabled: true
+    region: us-east-2
