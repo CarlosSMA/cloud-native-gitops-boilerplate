@@ -1,5 +1,6 @@
 enabled: true
 database:
+    region: us-east-2
     blue:
         region: us-east-2
     green:
@@ -7,6 +8,7 @@ database:
 search:
     region: us-east-2
 storage:
+    region: us-east-2
     green:
         region: us-east-2
     blue:
