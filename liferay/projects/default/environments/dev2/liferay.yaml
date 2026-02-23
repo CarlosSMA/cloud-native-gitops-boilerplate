@@ -119,3 +119,5 @@ liferay-default:
                         volumeMounts:
                             -   mountPath: /temp
                                 name: liferay-persistent-volume
+  backup:
+      enabled: true
