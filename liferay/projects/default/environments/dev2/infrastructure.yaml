@@ -11,3 +11,5 @@ storage:
         region: us-east-2
     blue:
         region: us-east-2
+backup:
+    enabled: true
