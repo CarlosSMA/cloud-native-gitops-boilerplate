@@ -63,3 +63,5 @@ liferay-default:
     requests:
       memory: 8Gi
       cpu: 2000m
+  customInitContainers:
+    
