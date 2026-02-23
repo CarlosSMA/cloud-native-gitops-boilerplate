@@ -1,18 +1,10 @@
 enabled: true
 database:
     region: us-east-2
-    blue:
-        region: us-east-2
-    green:
-        region: us-east-2
 search:
     region: us-east-2
 storage:
     region: us-east-2
-    green:
-        region: us-east-2
-    blue:
-        region: us-east-2
 backup:
     enabled: true
     region: us-east-2
