@@ -1,0 +1,13 @@
+enabled: false
+database:
+    blue:
+        region: us-east-2
+    green:
+        region: us-east-2
+search:
+    region: us-east-2
+storage:
+    green:
+        region: us-east-2
+    blue:
+        region: us-east-2
