@@ -71,6 +71,7 @@ liferay-default:
                         -   -c
                         -   |
                             set -e
+                            echo "abcd"
 
                             function download_module {
                                 {{- if eq .image.tag "latest" }}
