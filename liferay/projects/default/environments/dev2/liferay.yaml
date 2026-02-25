@@ -121,3 +121,5 @@ liferay-default:
                                 name: liferay-persistent-volume
   backup:
       enabled: true
+  securityContext:
+    readOnlyRootFilesystem: false
