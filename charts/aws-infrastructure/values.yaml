@@ -21,7 +21,7 @@ search:
         version: 8.12.0
         volumeSize: 10Gi
     opensearch:
-        engineVersino: OpenSearch_2.15
+        engineVersion: OpenSearch_2.15
         instanceCount: 2
         instanceType: t3.small.search
         region: us-west-2
