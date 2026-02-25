@@ -2,7 +2,8 @@ enabled: true
 database:
     region: us-east-2
 search:
-    region: us-east-2
+    opensearch:
+        region: us-east-2
 storage:
     region: us-east-2
 backup:
