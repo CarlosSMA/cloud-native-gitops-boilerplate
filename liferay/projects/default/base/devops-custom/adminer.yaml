@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adminer
+  namespace: test
+  labels:
+    name: adminer
+spec:
+  containers:
+  - name: adminer
+    image: adminer:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 8080
