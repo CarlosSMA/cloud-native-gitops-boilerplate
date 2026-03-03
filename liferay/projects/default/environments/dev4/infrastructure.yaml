@@ -1,4 +1,4 @@
-enabled: true
+enabled: false
 database:
     region: us-east-2
 search:
