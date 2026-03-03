@@ -875,6 +875,8 @@ spec:
                                 encryptAtRest:
                                     enabled: true
                                 engineVersion: {{ $searchSpec.engineVersion | quote }}
+                                softwareUpdateOptions:
+                                    autoSoftwareUpdateEnabled: true
                                 nodeToNodeEncryption:
                                     enabled: true
                                 region: {{ $searchSpec.region }}
