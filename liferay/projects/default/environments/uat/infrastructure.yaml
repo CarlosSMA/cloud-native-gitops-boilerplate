@@ -1,7 +1,2 @@
 enabled: true
-database:
-  region: us-east-2
-search:
-  region: us-east-2
-overlay:
-  region: us-east-2
+region: us-east-2
