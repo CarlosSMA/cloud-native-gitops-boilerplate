@@ -98,6 +98,11 @@ liferay-default:
             -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config
                 name: liferay-configmap
                 subPath: com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config
+    network:
+        enabled: true
+        timeouts:
+            backendRequest: 300s
+            request: 300s
     portalBundleDenyList:
         -   com.liferay.portal.search.elasticsearch.cross.cluster.replication.impl
         -   com.liferay.portal.search.elasticsearch.monitoring.web
@@ -111,6 +116,11 @@ liferay-default:
         jdbc.default.password=${env.DATABASE_PASSWORD}
         jdbc.default.url=jdbc:postgresql://${env.DATABASE_ENDPOINT}:${env.DATABASE_PORT}/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
         jdbc.default.username=${env.DATABASE_USERNAME}
+        proxy.forwarded.for.header=X-Forwarded-For
+        proxy.forwarded.host.header=X-Forwarded-Host
+        proxy.forwarded.proto.header=X-Forwarded-Proto
+        web.server.forwarded.port.enabled=true
+        web.server.forwarded.protocol.enabled=true
     resources:
         limits:
             cpu: 4000m
@@ -118,10 +128,6 @@ liferay-default:
         requests:
             cpu: 2000m
             memory: 4Gi
-    service:
-        annotations:
-            service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-        type: LoadBalancer
     volumeClaimTemplates:
         -   metadata:
                 name: liferay-persistent-volume

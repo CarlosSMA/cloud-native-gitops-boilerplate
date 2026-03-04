@@ -1,28 +1,26 @@
 backup:
     enabled: false
-    region: us-west-2
     rules:
         -   retentionDays: 30
             ruleName: daily-backups
             schedule: cron(0 5 * * ? *)
             startWindow: 60
 database:
+    engine: postgres
     engineVersion: "16.11"
     instanceClass: db.t3.medium
-    region: us-west-2
     storageGB: 20
     username: liferay_database_admin
+deletionProtection: false
 enabled: true
+gateway: {}
+license: {}
+overlay: {}
 search:
-    elasticsearch:
-        enabled: false
-        maxMapCount: 262144
-        nodeCount: 3
-        version: 8.12.0
-        volumeSize: 10Gi
-    opensearch:
-        engineVersion: OpenSearch_2.15
-        instanceCount: 2
-        instanceType: t3.small.search
-        region: us-west-2
-        username: liferay_search_admin
+    autoSoftwareUpdates: true
+    engineVersion: OpenSearch_2.15
+    instanceCount: 3
+    instanceType: t3.small.search
+    username: liferay_search_admin
+    volumeSize: 20
+storage: {}

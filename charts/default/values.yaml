@@ -193,12 +193,6 @@ image:
     pullSecrets: []
     repository: liferay/dxp
     tag: latest
-ingress:
-    annotations: {}
-    className: ""
-    enabled: false
-    rules: []
-    tls: []
 initContainers: []
 livenessProbe:
     failureThreshold: 3
@@ -209,6 +203,16 @@ livenessProbe:
     periodSeconds: 30
     timeoutSeconds: 5
 nameOverride: ""
+network:
+    annotations: {}
+    enabled: false
+    endpointRef: http
+    extraParentRefs: []
+    extraRules: []
+    forceHttpsRedirect: false
+    gatewayName: ""
+    hostnames: []
+    timeouts: {}
 nodeSelector: {}
 overlay:
     bucketName: ""

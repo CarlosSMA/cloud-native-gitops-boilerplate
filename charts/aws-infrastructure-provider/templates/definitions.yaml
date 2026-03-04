@@ -55,15 +55,18 @@ spec:
                                             minItems: 1
                                             type: array
                                     required:
-                                        -   region
                                         -   rules
                                     type: object
                                 commonTags:
-                                    additionalProperties: true
+                                    additionalProperties:
+                                        type: string
                                     default: {}
                                     type: object
                                 database:
                                     properties:
+                                        engine:
+                                            default: postgres
+                                            type: string
                                         engineVersion:
                                             default: "16.11"
                                             type: string
@@ -74,7 +77,6 @@ spec:
                                             default: false
                                             type: boolean
                                         region:
-                                            default: us-west-2
                                             type: string
                                         snapshotIdentifier:
                                             type: string
@@ -84,8 +86,6 @@ spec:
                                         username:
                                             default: liferay_database_admin
                                             type: string
-                                    required:
-                                        -   region
                                     type: object
                                 deletionProtection:
                                     default: false
@@ -95,49 +95,49 @@ spec:
                                 overlay:
                                     properties:
                                         region:
-                                            default: us-west-2
                                             type: string
-                                    required:
-                                        -   region
                                     type: object
                                 projectId:
+                                    type: string
+                                region:
                                     type: string
                                 search:
                                     properties:
                                         opensearch:
                                             properties:
+                                                autoSoftwareUpdates:
+                                                    default: true
+                                                    type: boolean
                                                 engineVersion:
                                                     default: OpenSearch_2.15
                                                     type: string
                                                 instanceCount:
-                                                    default: 2
+                                                    default: 3
                                                     type: integer
                                                 instanceType:
                                                     default: t3.small.search
                                                     type: string
                                                 region:
-                                                    default: us-west-2
                                                     type: string
                                                 username:
                                                     default: liferay_search_admin
                                                     type: string
-                                            required:
-                                                -   region
+                                                volumeSize:
+                                                    default: 20
+                                                    type: integer
                                             type: object
                                     type: object
                                 storage:
                                     properties:
                                         region:
-                                            default: us-west-2
                                             type: string
-                                    required:
-                                        -   region
                                     type: object
                             required:
                                 -   database
                                 -   deletionProtection
                                 -   environmentId
                                 -   projectId
+                                -   region
                                 -   search
                                 -   storage
                             type: object
