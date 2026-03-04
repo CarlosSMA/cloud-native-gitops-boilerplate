@@ -39,6 +39,7 @@ spec:
                         {{- $namespace := $xr.metadata.namespace -}}
                         {{- $oidcProvider := `}}{{ .Values.aws.oidcProvider | quote }}{{` -}}
                         {{- $privateSubnetIdsList := $privateSubnetIds | fromJson -}}
+                        {{- $subnetCount := len $privateSubnetIdsList -}}
 
                         {{- $backupSpec := $xr.spec.backup -}}
                         {{- $backupRegion := $backupSpec.region | default $baseRegion -}}
@@ -839,6 +840,7 @@ spec:
 
                         {{- $searchName := printf "%.21s-search" $baseName -}}
                         {{- $searchSpec := $xr.spec.search.opensearch }}
+                        {{- $searchRegion := $searchSpec.region | default $baseRegion }}
 
                         ---
                         apiVersion: opensearch.aws.m.upbound.io/v1beta1
@@ -868,31 +870,22 @@ spec:
                                     instanceCount: {{ $searchSpec.instanceCount }}
                                     instanceType: {{ $searchSpec.instanceType }}
                                     zoneAwarenessConfig:
-                                        availabilityZoneCount: 2
-                                    zoneAwarenessEnabled: true
+                                        availabilityZoneCount: {{ $subnetCount }}
+                                    zoneAwarenessEnabled: {{ gt $subnetCount 1 }}
                                 domainEndpointOptions:
                                     enforceHttps: true
                                     tlsSecurityPolicy: Policy-Min-TLS-1-2-2019-07
                                 domainName: {{ $searchName }}
                                 ebsOptions:
                                     ebsEnabled: true
-                                    volumeSize: {{ $searchSpec.volumeSize }}
+                                    volumeSize: 20
                                     volumeType: gp3
                                 encryptAtRest:
                                     enabled: true
                                 engineVersion: {{ $searchSpec.engineVersion | quote }}
-                                logPublishingOptions:
-                                -   logType: AUDIT_LOGS
-                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-audit-logs
-                                        enabled: true
-                                -   logType: INDEX_SLOW_LOGS
-                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-index-logs
-                                        enabled: true
                                 nodeToNodeEncryption:
                                     enabled: true
                                 region: {{ $searchRegion }}
-                                softwareUpdateOptions:
-                                    autoSoftwareUpdateEnabled: {{ $searchSpec.autoSoftwareUpdates }}
                                 tags:
                                     Name: {{ $searchName }}
                                 vpcOptions:
@@ -902,7 +895,7 @@ spec:
                                             component: search-security-group
                                             environmentId: {{ $environmentId }}
                                             projectId: {{ $projectId }}
-                                    subnetIds: {{ slice $privateSubnetIdsList 0 2 | toJson }}
+                                    subnetIds: {{ $privateSubnetIdsList | toJson }}
                             managementPolicies: {{ $managementPolicies }}
                             writeConnectionSecretToRef:
                                 name: liferay-search-credentials
@@ -945,51 +938,6 @@ spec:
                                         projectId: {{ $projectId }}
                                 region: {{ $searchRegion }}
                             managementPolicies: {{ $managementPolicies }}
-                        ---
-                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
-                        kind: LogGroup
-                        metadata:
-                            name: {{ $searchName }}-audit-logs
-                        spec:
-                        forProvider:
-                            region: {{ $searchSpec.region }}
-                            retentionInDays: 7
-
-                        ---
-                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
-                        kind: LogGroup
-                        metadata:
-                            name: {{ $searchName }}-index-logs
-                        spec:
-                        forProvider:
-                            region: {{ $searchSpec.region }}
-                            retentionInDays: 7
-                        ---
-                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
-                        kind: ResourcePolicy
-                        metadata:
-                            name: opensearch-log-publishing-policy
-                        spec:
-                        forProvider:
-                            policyName: OpenSearchLogPublishing
-                            region: {{ $searchRegion }}
-                            policyDocument: |
-                            {
-                                "Version": "2012-10-17",
-                                "Statement": [
-                                {
-                                    "Action": [
-                                        "logs:CreateLogStream"
-                                        "logs:PutLogEvents",
-                                    ],
-                                    "Effect": "Allow",
-                                    "Principal": {
-                                        "Service": "es.amazonaws.com"
-                                    },
-                                    "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:/aws/OpenSearchService/domains/{{ $searchName }}:*"
-                                }
-                                ]
-                            }
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
@@ -1116,7 +1064,7 @@ spec:
                                 {{- with .resource }}
                                     {{- with .status }}
                                         {{- with .atProvider }}
-                                            {{- $databaseAddress = .address -}}
+                                            {{- $databaseAddress = .address | toString -}}
                                             {{- $databasePort = .port | toString -}}
                                         {{- end -}}
                                     {{- end -}}
@@ -1134,7 +1082,7 @@ spec:
                                 {{- with .resource }}
                                     {{- with .status }}
                                         {{- with .atProvider }}
-                                            {{- $searchEndpoint = .endpoint -}}
+                                            {{- $searchEndpoint = .endpoint | toString -}}
                                         {{- end -}}
                                     {{- end -}}
                                 {{- end -}}
@@ -1147,14 +1095,14 @@ spec:
                                 {{- with .resource }}
                                     {{- with .metadata }}
                                         {{- with .annotations }}
-                                            {{- $storageName = index . "crossplane.io/external-name" -}}
+                                            {{- $storageName = index . "crossplane.io/external-name" | toString -}}
                                         {{- end -}}
                                     {{- end -}}
                                 {{- end -}}
                             {{- end -}}
                         {{- end -}}
 
-                        {{- if and $databaseAddress $databasePassword $searchEndpoint $storageName }}
+                        {{- if and $databaseAddress $databasePassword $databasePort $searchEndpoint $searchPassword $storageName }}
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
@@ -1190,15 +1138,15 @@ spec:
                                                 name: {{ .observed.composite.resource.metadata.name }}
                                                 uid: {{ .observed.composite.resource.metadata.uid }}
                                     stringData:
-                                        DATABASE_ENDPOINT: {{ $databaseAddress | toString }}
-                                        DATABASE_PASSWORD: {{ $databasePassword | default "" | toString }}
+                                        DATABASE_ENDPOINT: {{ $databaseAddress | quote }}
+                                        DATABASE_PASSWORD: {{ $databasePassword | quote }}
                                         DATABASE_PORT: {{ $databasePort | default 5432 | quote }}
-                                        DATABASE_USERNAME: {{ $database.resource.spec.forProvider.username | toString }}
-                                        OPENSEARCH_ENDPOINT: {{ $searchEndpoint | toString }}
-                                        OPENSEARCH_PASSWORD: {{ $searchPassword | default "" | toString }}
-                                        OPENSEARCH_USERNAME: {{ $search.resource.spec.forProvider.advancedSecurityOptions.masterUserOptions.masterUserName | toString }}
-                                        S3_BUCKET_ID: {{ $storageName | toString }}
-                                        S3_BUCKET_REGION: {{ $storage.resource.spec.forProvider.region | toString }}
+                                        DATABASE_USERNAME: {{ $database.resource.spec.forProvider.username | quote }}
+                                        OPENSEARCH_ENDPOINT: {{ $searchEndpoint | quote }}
+                                        OPENSEARCH_PASSWORD: {{ $searchPassword | quote }}
+                                        OPENSEARCH_USERNAME: {{ $search.resource.spec.forProvider.advancedSecurityOptions.masterUserOptions.masterUserName | quote }}
+                                        S3_BUCKET_ID: {{ $storageName | quote }}
+                                        S3_BUCKET_REGION: {{ $storage.resource.spec.forProvider.region | quote }}
                                     type: Opaque
                             managementPolicies: {{ $managementPolicies }}
                         {{- end }}
@@ -1206,7 +1154,7 @@ spec:
                         apiVersion: aws.liferay.com/v1alpha1
                         kind: LiferayInfrastructure
                         status:
-                        {{- if and $databaseAddress $databasePassword $searchEndpoint $storageName }}
+                        {{- if and $databaseAddress $databasePassword $databasePort $searchEndpoint $searchPassword $storageName }}
                             managedServiceDetailsReady: true
                         {{- else }}
                             managedServiceDetailsReady: false

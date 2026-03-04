@@ -105,14 +105,11 @@ spec:
                                     properties:
                                         opensearch:
                                             properties:
-                                                autoSoftwareUpdates:
-                                                    default: true
-                                                    type: boolean
                                                 engineVersion:
                                                     default: OpenSearch_2.15
                                                     type: string
                                                 instanceCount:
-                                                    default: 3
+                                                    default: 2
                                                     type: integer
                                                 instanceType:
                                                     default: t3.small.search
@@ -122,9 +119,6 @@ spec:
                                                 username:
                                                     default: liferay_search_admin
                                                     type: string
-                                                volumeSize:
-                                                    default: 20
-                                                    type: integer
                                             type: object
                                     type: object
                                 storage:

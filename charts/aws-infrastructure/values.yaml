@@ -13,14 +13,14 @@ database:
     username: liferay_database_admin
 deletionProtection: false
 enabled: true
+endpoints: {}
 gateway: {}
 license: {}
 overlay: {}
 search:
-    autoSoftwareUpdates: true
-    engineVersion: OpenSearch_2.15
-    instanceCount: 3
-    instanceType: t3.small.search
-    username: liferay_search_admin
-    volumeSize: 20
+    opensearch:
+        engineVersion: OpenSearch_2.15
+        instanceCount: 1
+        instanceType: t3.small.search
+        username: liferay_search_admin
 storage: {}
