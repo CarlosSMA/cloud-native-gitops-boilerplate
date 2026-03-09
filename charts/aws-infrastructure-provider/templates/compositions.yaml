@@ -1154,7 +1154,7 @@ spec:
                             namespace: {{ $namespace }}
                         spec:
                             forProvider:
-                                region: {{ $searchSpec.region }}
+                                region: {{ $searchRegion }}
                                 retentionInDays: 7
                         ---
                         apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
@@ -1166,7 +1166,7 @@ spec:
                             namespace: {{ $namespace }}
                         spec:
                             forProvider:
-                                region: {{ $searchSpec.region }}
+                                region: {{ $searchRegion }}
                                 retentionInDays: 7
                         ---
                         apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
