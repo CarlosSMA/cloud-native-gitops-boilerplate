@@ -1186,14 +1186,14 @@ spec:
                                     "Statement": [
                                     {
                                         "Action": [
-                                            "logs:CreateLogStream"
-                                            "logs:PutLogEvents",
+                                            "logs:CreateLogStream",
+                                            "logs:PutLogEvents"
                                         ],
                                         "Effect": "Allow",
                                         "Principal": {
                                             "Service": "es.amazonaws.com"
                                         },
-                                        "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:/aws/OpenSearchService/domains/{{ $searchName }}:*"
+                                        "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*",
                                     }
                                     ]
                                 }
