@@ -1153,9 +1153,9 @@ spec:
                             name: {{ $searchName }}-audit-logs
                             namespace: {{ $namespace }}
                         spec:
-                        forProvider:
-                            region: {{ $searchSpec.region }}
-                            retentionInDays: 7
+                            forProvider:
+                                region: {{ $searchSpec.region }}
+                                retentionInDays: 7
                         ---
                         apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
                         kind: Group
@@ -1165,9 +1165,9 @@ spec:
                             name: {{ $searchName }}-index-logs
                             namespace: {{ $namespace }}
                         spec:
-                        forProvider:
-                            region: {{ $searchSpec.region }}
-                            retentionInDays: 7
+                            forProvider:
+                                region: {{ $searchSpec.region }}
+                                retentionInDays: 7
                         ---
                         apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
                         kind: ResourcePolicy
