@@ -914,33 +914,6 @@ spec:
                             managementPolicies: {{ $managementPolicies }}
                         ---
                         apiVersion: s3.aws.m.upbound.io/v1beta1
-                        kind: BucketOwnershipControls
-                        metadata:
-                            annotations:
-                                crossplane.io/external-name: {{ $storageName }}-ownership-controls-{{ $dataPlane }}
-                                gotemplating.fn.crossplane.io/composition-resource-name: storage-ownership-controls-{{ $dataPlane }}
-                            labels:
-                                app: liferay
-                                component: storage
-                                environmentId: {{ $environmentId }}
-                                projectId: {{ $projectId }}
-                            name: {{ $storageName }}-ownership-controls-{{ $dataPlane }}
-                            namespace: {{ $namespace }}
-                        spec:
-                            forProvider:
-                                bucketSelector:
-                                    matchLabels:
-                                        app: liferay
-                                        component: storage
-                                        dataPlane: {{ $dataPlane }}
-                                        environmentId: {{ $environmentId }}
-                                        projectId: {{ $projectId }}
-                                region: {{ $storageRegion }}
-                                rule:
-                                    objectOwnership: BucketOwnerPreferred
-                            managementPolicies: {{ $managementPolicies }}
-                        ---
-                        apiVersion: s3.aws.m.upbound.io/v1beta1
                         kind: BucketPublicAccessBlock
                         metadata:
                             annotations:
@@ -1102,14 +1075,23 @@ spec:
                                 domainName: {{ $searchName }}
                                 ebsOptions:
                                     ebsEnabled: true
-                                    volumeSize: 20
+                                    volumeSize: {{ $searchSpec.volumeSize }}
                                     volumeType: gp3
                                 encryptAtRest:
                                     enabled: true
                                 engineVersion: {{ $searchSpec.engineVersion | quote }}
+                                logPublishingOptions:
+                                -   logType: AUDIT_LOGS
+                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-audit-logs
+                                        enabled: true
+                                -   logType: INDEX_SLOW_LOGS
+                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-index-logs
+                                        enabled: true
                                 nodeToNodeEncryption:
                                     enabled: true
                                 region: {{ $searchRegion }}
+                                softwareUpdateOptions:
+                                    autoSoftwareUpdateEnabled: {{ $searchSpec.autoSoftwareUpdateEnabled }}
                                 tags:
                                     Name: {{ $searchName }}
                                 vpcOptions:
@@ -1162,6 +1144,50 @@ spec:
                                         projectId: {{ $projectId }}
                                 region: {{ $searchRegion }}
                             managementPolicies: {{ $managementPolicies }}
+                        ---
+                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
+                        kind: LogGroup
+                        metadata:
+                            name: {{ $searchName }}-audit-logs
+                        spec:
+                        forProvider:
+                            region: {{ $searchSpec.region }}
+                            retentionInDays: 7
+                        ---
+                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
+                        kind: LogGroup
+                        metadata:
+                            name: {{ $searchName }}-index-logs
+                        spec:
+                        forProvider:
+                            region: {{ $searchSpec.region }}
+                            retentionInDays: 7
+                        ---
+                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
+                        kind: ResourcePolicy
+                        metadata:
+                            name: {{ $searchName }}-log-publishing-policy
+                        spec:
+                        forProvider:
+                            policyName: OpenSearchLogPublishing
+                            region: {{ $searchRegion }}
+                            policyDocument: |
+                                {
+                                    "Version": "2012-10-17",
+                                    "Statement": [
+                                    {
+                                        "Action": [
+                                            "logs:CreateLogStream"
+                                            "logs:PutLogEvents",
+                                        ],
+                                        "Effect": "Allow",
+                                        "Principal": {
+                                            "Service": "es.amazonaws.com"
+                                        },
+                                        "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:/aws/OpenSearchService/domains/{{ $searchName }}:*"
+                                    }
+                                    ]
+                                }
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
