@@ -1148,6 +1148,8 @@ spec:
                         apiVersion: cloudwatch.aws.upbound.io/v1beta1
                         kind: LogGroup
                         metadata:
+                            annotations:
+                                gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-audit-logs
                             name: {{ $searchName }}-audit-logs
                         spec:
                         forProvider:
@@ -1157,6 +1159,8 @@ spec:
                         apiVersion: cloudwatch.aws.upbound.io/v1beta1
                         kind: LogGroup
                         metadata:
+                            annotations:
+                                gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-index-logs
                             name: {{ $searchName }}-index-logs
                         spec:
                         forProvider:
