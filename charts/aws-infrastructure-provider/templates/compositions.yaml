@@ -1170,6 +1170,9 @@ spec:
                         apiVersion: cloudwatch.aws.upbound.io/v1beta1
                         kind: ResourcePolicy
                         metadata:
+                        metadata:
+                            annotations:
+                                gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-log-publishing-policy
                             name: {{ $searchName }}-log-publishing-policy
                         spec:
                         forProvider:
