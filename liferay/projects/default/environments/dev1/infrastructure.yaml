@@ -1,2 +1,5 @@
 enabled: true
 region: us-east-2
+search:
+  opensearch:
+    instanceCount: 2
