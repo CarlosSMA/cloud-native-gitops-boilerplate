@@ -1151,7 +1151,6 @@ spec:
                             annotations:
                                 gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-audit-logs
                             name: {{ $searchName }}-audit-logs
-                            namespace: {{ $namespace }}
                         spec:
                             forProvider:
                                 region: {{ $searchSpec.region }}
@@ -1163,7 +1162,6 @@ spec:
                             annotations:
                                 gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-index-logs
                             name: {{ $searchName }}-index-logs
-                            namespace: {{ $namespace }}
                         spec:
                             forProvider:
                                 region: {{ $searchSpec.region }}
