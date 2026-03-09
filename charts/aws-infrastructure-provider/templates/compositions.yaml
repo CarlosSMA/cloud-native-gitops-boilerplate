@@ -1082,11 +1082,11 @@ spec:
                                 engineVersion: {{ $searchSpec.engineVersion | quote }}
                                 logPublishingOptions:
                                     -   logType: AUDIT_LOGS
-                                            cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-audit-logs
-                                            enabled: true
+                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-audit-logs
+                                        enabled: true
                                     -   logType: INDEX_SLOW_LOGS
-                                            cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-index-logs
-                                            enabled: true
+                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchSpec.region }}:{{ $accountId }}:log-group:{{ $searchName }}-index-logs
+                                        enabled: true
                                 nodeToNodeEncryption:
                                     enabled: true
                                 region: {{ $searchRegion }}
