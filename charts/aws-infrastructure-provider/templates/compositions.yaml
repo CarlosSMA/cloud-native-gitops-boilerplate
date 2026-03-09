@@ -38,6 +38,7 @@ spec:
                         {{- $managementPoliciesNoUpdate := $xr.spec.deletionProtection | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson -}}
                         {{- $namespace := $xr.metadata.namespace -}}
                         {{- $oidcProvider := `}}{{ .Values.aws.oidcProvider | quote }}{{` -}}
+                        {{- $storageName := printf "%s-%s-storage" $accountId $baseName -}}
                         {{- $privateSubnetIdsList := $privateSubnetIds | fromJson -}}
                         {{- $subnetCount := len $privateSubnetIdsList -}}
 
@@ -64,6 +65,36 @@ spec:
                             managementPolicies: {{ $managementPolicies }}
                         ---
                         apiVersion: s3.aws.m.upbound.io/v1beta1
+                        kind: BucketLifecycleConfiguration
+                        metadata:
+                            annotations:
+                                crossplane.io/external-name: {{ $baseName }}-argo-wf-lifecycle
+                                gotemplating.fn.crossplane.io/composition-resource-name: argo-wf-lifecycle
+                            labels:
+                                environmentId: {{ $environmentId }}
+                                projectId: {{ $projectId }}
+                            name: {{ $baseName }}-argo-wf
+                        spec:
+                            forProvider:
+                                bucketSelector:
+                                    matchLabels:
+                                        app: liferay
+                                        component: argo-wf
+                                        environmentId: {{ $environmentId }}
+                                        projectId: {{ $projectId }}
+                                region: {{ $backupRegion }}
+                                rule:
+                                    -   abortIncompleteMultipartUpload:
+                                            -   daysAfterInitiation: 7
+                                        expiration:
+                                            -   expiredObjectDeleteMarker: true
+                                        id: bucket-scoped-rule
+                                        noncurrentVersionExpiration:
+                                            -   noncurrentDays: 7
+                                        status: Enabled
+                            managementPolicies: {{ $managementPolicies }}
+                        ---
+                        apiVersion: s3.aws.m.upbound.io/v1beta1
                         kind: BucketVersioning
                         metadata:
                             annotations:
@@ -86,6 +117,123 @@ spec:
                                 region: {{ $backupRegion }}
                                 versioningConfiguration:
                                     status: Enabled
+                            managementPolicies: {{ $managementPolicies }}
+                        ---
+                        apiVersion: kubernetes.m.crossplane.io/v1alpha1
+                        kind: Object
+                        metadata:
+                            annotations:
+                                gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-artifact-repository
+                            labels:
+                                app: liferay
+                                component: argo-wf
+                                environmentId: {{ $environmentId }}
+                                projectId: {{ $projectId }}
+                            name: {{ $baseName }}-backup-restore-artifact-repository
+                            namespace: {{ $namespace }}
+                        spec:
+                            forProvider:
+                                manifest:
+                                    apiVersion: v1
+                                    kind: ConfigMap
+                                    metadata:
+                                        annotations:
+                                            workflows.argoproj.io/default-artifact-repository: artifact-repository
+                                        labels:
+                                            app: liferay
+                                            component: argo-wf
+                                            environmentId: {{ $environmentId }}
+                                            projectId: {{ $projectId }}
+                                        name: backup-restore-artifact-repository
+                                        namespace: {{ $namespace }}
+                                    data:
+                                        artifact-repository: |
+                                            s3:
+                                                bucket: {{ $baseName }}-argo-wf
+                                                endpoint: s3.amazonaws.com
+                            managementPolicies: {{ $managementPolicies }}
+                        ---
+                        apiVersion: kubernetes.m.crossplane.io/v1alpha1
+                        kind: Object
+                        metadata:
+                            annotations:
+                                gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-role-binding
+                            labels:
+                                app: liferay
+                                component: backup-restore-role
+                                environmentId: {{ $environmentId }}
+                                projectId: {{ $projectId }}
+                            name: {{ $baseName }}-backup-restore-role-binding
+                            namespace: {{ $namespace }}
+                        spec:
+                            forProvider:
+                                manifest:
+                                    apiVersion: rbac.authorization.k8s.io/v1
+                                    kind: RoleBinding
+                                    metadata:
+                                        labels:
+                                            app: liferay
+                                            component: backup-restore-role
+                                            environmentId: {{ $environmentId }}
+                                            projectId: {{ $projectId }}
+                                        name: backup-restore-role-binding
+                                        namespace: {{ $namespace }}
+                                    roleRef:
+                                        apiGroup: rbac.authorization.k8s.io
+                                        kind: ClusterRole
+                                        name: backup-restore-cluster-role
+                                    subjects:
+                                        -   kind: ServiceAccount
+                                            name: backup-restore-service-account
+                                            namespace: {{ $namespace }}
+                            managementPolicies: {{ $managementPolicies }}
+                        ---
+                        {{- $backupRestoreRole := dict -}}
+
+                        {{- if .observed.resources -}}
+                            {{- $backupRestoreRole = index .observed.resources "backup-restore-role" -}}
+                        {{- end -}}
+
+                        {{- $backupRestoreRoleArn := "" -}}
+
+                        {{- if kindIs "map" $backupRestoreRole -}}
+                            {{- with $backupRestoreRole -}}
+                                {{- with .resource -}}
+                                    {{- with .status -}}
+                                        {{- with .atProvider -}}
+                                            {{- $backupRestoreRoleArn = .arn -}}
+                                        {{- end -}}
+                                    {{- end -}}
+                                {{- end -}}
+                            {{- end -}}
+                        {{- end }}
+                        apiVersion: kubernetes.m.crossplane.io/v1alpha1
+                        kind: Object
+                        metadata:
+                            annotations:
+                                gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-service-account
+                            labels:
+                                app: liferay
+                                component: backup-restore-role
+                                environmentId: {{ $environmentId }}
+                                projectId: {{ $projectId }}
+                            name: {{ $baseName }}-backup-restore-service-account
+                            namespace: {{ $namespace }}
+                        spec:
+                            forProvider:
+                                manifest:
+                                    apiVersion: v1
+                                    kind: ServiceAccount
+                                    metadata:
+                                        annotations:
+                                            eks.amazonaws.com/role-arn: {{ $backupRestoreRoleArn }}
+                                        labels:
+                                            app: liferay
+                                            component: backup-restore-role
+                                            environmentId: {{ $environmentId }}
+                                            projectId: {{ $projectId }}
+                                        name: backup-restore-service-account
+                                        namespace: {{ $namespace }}
                             managementPolicies: {{ $managementPolicies }}
                         ---
                         apiVersion: backup.aws.m.upbound.io/v1beta1
@@ -150,6 +298,20 @@ spec:
                                                 ]
                                             },
                                             {
+                                                "Action": [
+                                                    "s3:DeleteObject",
+                                                    "s3:GetBucketLocation",
+                                                    "s3:ListBucket"
+                                                ],
+                                                "Effect": "Allow",
+                                                "Resource": [
+                                                    "arn:aws:s3:::{{ $storageName }}-blue",
+                                                    "arn:aws:s3:::{{ $storageName }}-blue/*",
+                                                    "arn:aws:s3:::{{ $storageName }}-green",
+                                                    "arn:aws:s3:::{{ $storageName }}-green/*"
+                                                ]
+                                            },
+                                            {
                                                 "Action": "iam:PassRole",
                                                 "Effect": "Allow",
                                                 "Resource": "arn:aws:iam::{{ $accountId }}:role/{{ $baseName }}-backup-service-role"
@@ -191,7 +353,7 @@ spec:
                                                 "Condition": {
                                                     "StringEquals": {
                                                         "{{ $oidcProvider }}:aud": "sts.amazonaws.com",
-                                                        "{{ $oidcProvider }}:sub": "system:serviceaccount:{{ $namespace }}:backup-restore"
+                                                        "{{ $oidcProvider }}:sub": "system:serviceaccount:{{ $namespace }}:backup-restore-service-account"
                                                     }
                                                 },
                                                 "Effect": "Allow",
@@ -287,6 +449,10 @@ spec:
                                             value: "true"
                                         -   key: aws:ResourceTag/DeploymentName
                                             value: {{ $deploymentName }}
+                                        -   key: aws:ResourceTag/EnvironmentId
+                                            value: {{ $environmentId }}
+                                        -   key: aws:ResourceTag/ProjectId
+                                            value: {{ $projectId }}
                                 iamRoleArnSelector:
                                     matchLabels:
                                         app: liferay
@@ -323,11 +489,26 @@ spec:
                         {{- end }}
 
                         {{- $databaseInstanceManagementPolicies := $backupSpec.enabled | ternary ((list "*") | toJson) $managementPolicies -}}
-                        {{- $databaseSpec := $xr.spec.database }}
+                        {{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
+
+                        {{- $databaseSpec := $xr.spec.database -}}
+
                         {{- $databaseRegion := $databaseSpec.region | default $baseRegion }}
 
-                        {{- range $dataPlane := list "blue" "green" -}}
-                        {{- if or (eq $dataPlane $xr.spec.activeDataPlane) $databaseSpec.isRestoring }}
+                        {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
+
+                        {{- $activeDataPlane := $targetActiveDataPlane -}}
+                        {{- $dataPlanes := list $targetActiveDataPlane -}}
+                        {{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
+
+                        {{- if (eq $restorePhase "promoting") -}}
+                            {{- $dataPlanes = list "blue" "green" -}}
+                        {{- else if (eq $restorePhase "provisioning") -}}
+                            {{- $activeDataPlane = $targetInactiveDataPlane -}}
+                            {{- $dataPlanes = list "blue" "green" -}}
+                        {{- end -}}
+
+                        {{- range $dataPlane := $dataPlanes }}
                         ---
                         apiVersion: rds.aws.m.upbound.io/v1beta1
                         kind: Instance
@@ -346,6 +527,7 @@ spec:
                         spec:
                             forProvider:
                                 allocatedStorage: {{ $databaseSpec.storageGB }}
+                                applyImmediately: {{ and (eq $dataPlane $targetActiveDataPlane) (ne $restorePhase "none") }}
                                 autoGeneratePassword: true
                                 backupRetentionPeriod: 7
                                 dbName: lportal
@@ -366,7 +548,7 @@ spec:
                                     name: liferay-database-{{ $dataPlane }}-password
                                 region: {{ $databaseRegion }}
                                 skipFinalSnapshot: true
-                                {{- if and (ne $dataPlane $xr.spec.activeDataPlane) $databaseSpec.snapshotIdentifier }}
+                                {{- if and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
                                 snapshotIdentifier: {{ $databaseSpec.snapshotIdentifier }}
                                 {{- end }}
                                 storageType: gp3
@@ -379,8 +561,8 @@ spec:
                                         environmentId: {{ $environmentId }}
                                         projectId: {{ $projectId }}
                                 tags:
-                                    Active: {{ printf "%t" (eq $dataPlane $xr.spec.activeDataPlane) }}
-                                    Backup: true
+                                    Active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+                                    Backup: "true"
                                     Name: {{ $baseName }}-database-{{ $dataPlane }}
                             managementPolicies: {{ $databaseInstanceManagementPolicies }}
                             writeConnectionSecretToRef:
@@ -455,7 +637,6 @@ spec:
                                 tags:
                                     Name: {{ $baseName }}-database-{{ $dataPlane }}-subnets
                             managementPolicies: {{ $managementPolicies }}
-                        {{- end }}
                         {{- end -}}
 
                         {{- $overlayBucketName := printf "%s-overlay-%s" $deploymentName $baseName -}}
@@ -504,7 +685,11 @@ spec:
                                 rule:
                                     -   abortIncompleteMultipartUpload:
                                             -   daysAfterInitiation: 7
-                                        id: abort-incomplete-multipart-upload
+                                        expiration:
+                                            -   expiredObjectDeleteMarker: true
+                                        id: bucket-scoped-rule
+                                        noncurrentVersionExpiration:
+                                            -   noncurrentDays: 7
                                         status: Enabled
                             managementPolicies: {{ $managementPolicies }}
                         ---
@@ -663,7 +848,6 @@ spec:
                             writeConnectionSecretToRef:
                                 name: {{ $overlayBucketName }}-ci-uploader-access-key
 
-                        {{- $storageName := printf "%s-%s-storage" $accountId $baseName -}}
                         {{- $storageSpec := $xr.spec.storage }}
                         {{- $storageRegion := $storageSpec.region | default $baseRegion }}
 
@@ -687,8 +871,8 @@ spec:
                             forProvider:
                                 region: {{ $storageRegion }}
                                 tags:
-                                    Active: {{ printf "%t" (eq $dataPlane $xr.spec.activeDataPlane) }}
-                                    Backup: true
+                                    Active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+                                    Backup: "true"
                                     Name: {{ $storageName }}-{{ $dataPlane }}
                             managementPolicies: {{ $managementPolicies }}
                         ---
@@ -715,8 +899,39 @@ spec:
                                 rule:
                                     -   abortIncompleteMultipartUpload:
                                             -   daysAfterInitiation: 7
-                                        id: abort-incomplete-multipart-upload
+                                        expiration:
+                                            -   expiredObjectDeleteMarker: true
+                                        id: bucket-scoped-rule
+                                        noncurrentVersionExpiration:
+                                            -   noncurrentDays: 7
                                         status: Enabled
+                            managementPolicies: {{ $managementPolicies }}
+                        ---
+                        apiVersion: s3.aws.m.upbound.io/v1beta1
+                        kind: BucketOwnershipControls
+                        metadata:
+                            annotations:
+                                crossplane.io/external-name: {{ $storageName }}-ownership-controls-{{ $dataPlane }}
+                                gotemplating.fn.crossplane.io/composition-resource-name: storage-ownership-controls-{{ $dataPlane }}
+                            labels:
+                                app: liferay
+                                component: storage
+                                environmentId: {{ $environmentId }}
+                                projectId: {{ $projectId }}
+                            name: {{ $storageName }}-ownership-controls-{{ $dataPlane }}
+                            namespace: {{ $namespace }}
+                        spec:
+                            forProvider:
+                                bucketSelector:
+                                    matchLabels:
+                                        app: liferay
+                                        component: storage
+                                        dataPlane: {{ $dataPlane }}
+                                        environmentId: {{ $environmentId }}
+                                        projectId: {{ $projectId }}
+                                region: {{ $storageRegion }}
+                                rule:
+                                    objectOwnership: BucketOwnerPreferred
                             managementPolicies: {{ $managementPolicies }}
                         ---
                         apiVersion: s3.aws.m.upbound.io/v1beta1
@@ -726,6 +941,9 @@ spec:
                                 crossplane.io/external-name: {{ $storageName }}-public-access-block-{{ $dataPlane }}
                                 gotemplating.fn.crossplane.io/composition-resource-name: storage-public-access-block-{{ $dataPlane }}
                             labels:
+                                app: liferay
+                                component: storage
+                                dataPlane: {{ $dataPlane }}
                                 environmentId: {{ $environmentId }}
                                 projectId: {{ $projectId }}
                             name: {{ $storageName }}-public-access-block-{{ $dataPlane }}
@@ -753,7 +971,7 @@ spec:
                                 gotemplating.fn.crossplane.io/composition-resource-name: storage-versioning-{{ $dataPlane }}
                             labels:
                                 app: liferay
-                                component: storage-versioning
+                                component: storage
                                 dataPlane: {{ $dataPlane }}
                                 environmentId: {{ $environmentId }}
                                 projectId: {{ $projectId }}
@@ -836,7 +1054,7 @@ spec:
                                         projectId: {{ $projectId }}
                                 role: {{ $liferayServiceAccountRoleName }}
                             managementPolicies: {{ $managementPolicies }}
-                        {{- end }}
+                        {{- end -}}
 
                         {{- $searchName := printf "%.21s-search" $baseName -}}
                         {{- $searchSpec := $xr.spec.search.opensearch }}
@@ -1031,17 +1249,30 @@ spec:
                         {{- $xr := .observed.composite.resource -}}
 
                         {{- $environmentId := $xr.spec.environmentId -}}
-                        {{- $projectId := $xr.spec.projectId -}}
-                        {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
-                        {{- $uidHash := printf "%s-%s-%s" $accountId $deploymentName $projectIdFull | sha256sum | trunc 6 -}}
-                        {{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
-
                         {{- $managementPolicies := $xr.spec.deletionProtection | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
                         {{- $namespace := $xr.metadata.namespace -}}
+                        {{- $projectId := $xr.spec.projectId -}}
+                        {{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
 
-                        {{- $databaseResourceName := printf "database-%s" $xr.spec.activeDataPlane -}}
+                        {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
+
+                        {{- $uidHash := printf "%s-%s-%s" $accountId $deploymentName $projectIdFull | sha256sum | trunc 6 -}}
+
+                        {{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
+
+                        {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
+
+                        {{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
+
+                        {{- $activeDataPlane := $targetActiveDataPlane -}}
+
+                        {{- if (eq $restorePhase "provisioning") -}}
+                            {{- $activeDataPlane = $targetInactiveDataPlane -}}
+                        {{- end -}}
+
+                        {{- $databaseResourceName := printf "database-%s" $activeDataPlane -}}
                         {{- $searchResourceName := "search" -}}
-                        {{- $storageResourceName := printf "storage-%s" $xr.spec.activeDataPlane -}}
+                        {{- $storageResourceName := printf "storage-%s" $activeDataPlane -}}
 
                         {{- $database := dict -}}
                         {{- $search := dict -}}
@@ -1121,6 +1352,16 @@ spec:
                             forProvider:
                                 manifest:
                                     apiVersion: v1
+                                    data:
+                                        DATABASE_ENDPOINT: {{ $databaseAddress | b64enc | quote }}
+                                        DATABASE_PASSWORD: {{ $databasePassword | b64enc | quote }}
+                                        DATABASE_PORT: {{ $databasePort | default 5432 | b64enc | quote }}
+                                        DATABASE_USERNAME: {{ $database.resource.spec.forProvider.username | b64enc | quote }}
+                                        OPENSEARCH_ENDPOINT: {{ $searchEndpoint | b64enc | quote }}
+                                        OPENSEARCH_PASSWORD: {{ $searchPassword | b64enc | quote }}
+                                        OPENSEARCH_USERNAME: {{ $search.resource.spec.forProvider.advancedSecurityOptions.masterUserOptions.masterUserName | b64enc | quote }}
+                                        S3_BUCKET_ID: {{ $storageName | b64enc | quote }}
+                                        S3_BUCKET_REGION: {{ $storage.resource.spec.forProvider.region | b64enc | quote }}
                                     kind: Secret
                                     metadata:
                                         labels:
@@ -1137,16 +1378,6 @@ spec:
                                                 kind: LiferayInfrastructure
                                                 name: {{ .observed.composite.resource.metadata.name }}
                                                 uid: {{ .observed.composite.resource.metadata.uid }}
-                                    stringData:
-                                        DATABASE_ENDPOINT: {{ $databaseAddress | quote }}
-                                        DATABASE_PASSWORD: {{ $databasePassword | quote }}
-                                        DATABASE_PORT: {{ $databasePort | default 5432 | quote }}
-                                        DATABASE_USERNAME: {{ $database.resource.spec.forProvider.username | quote }}
-                                        OPENSEARCH_ENDPOINT: {{ $searchEndpoint | quote }}
-                                        OPENSEARCH_PASSWORD: {{ $searchPassword | quote }}
-                                        OPENSEARCH_USERNAME: {{ $search.resource.spec.forProvider.advancedSecurityOptions.masterUserOptions.masterUserName | quote }}
-                                        S3_BUCKET_ID: {{ $storageName | quote }}
-                                        S3_BUCKET_REGION: {{ $storage.resource.spec.forProvider.region | quote }}
                                     type: Opaque
                             managementPolicies: {{ $managementPolicies }}
                         {{- end }}
