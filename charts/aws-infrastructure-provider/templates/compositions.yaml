@@ -1167,7 +1167,7 @@ spec:
                             region: {{ $searchSpec.region }}
                             retentionInDays: 7
                         ---
-                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
+                        apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
                         kind: ResourcePolicy
                         metadata:
                         metadata:
