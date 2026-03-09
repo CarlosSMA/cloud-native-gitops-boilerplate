@@ -1145,8 +1145,8 @@ spec:
                                 region: {{ $searchRegion }}
                             managementPolicies: {{ $managementPolicies }}
                         ---
-                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
-                        kind: LogGroup
+                        apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
+                        kind: Group
                         metadata:
                             annotations:
                                 gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-audit-logs
@@ -1156,8 +1156,8 @@ spec:
                             region: {{ $searchSpec.region }}
                             retentionInDays: 7
                         ---
-                        apiVersion: cloudwatch.aws.upbound.io/v1beta1
-                        kind: LogGroup
+                        apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
+                        kind: Group
                         metadata:
                             annotations:
                                 gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-index-logs
