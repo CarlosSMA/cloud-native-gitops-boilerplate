@@ -123,7 +123,7 @@ spec:
                                                 username:
                                                     default: liferay_search_admin
                                                     type: string
-                                                volumeSize:
+                                                volumeSizeGB:
                                                     default: 20
                                                     type: integer
                                             type: object

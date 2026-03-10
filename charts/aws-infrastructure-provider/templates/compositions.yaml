@@ -1102,18 +1102,18 @@ spec:
                                 domainName: {{ $searchName }}
                                 ebsOptions:
                                     ebsEnabled: true
-                                    volumeSize: {{ $searchSpec.volumeSize }}
+                                    volumeSize: {{ $searchSpec.volumeSizeGB }}
                                     volumeType: gp3
                                 encryptAtRest:
                                     enabled: true
                                 engineVersion: {{ $searchSpec.engineVersion | quote }}
                                 logPublishingOptions:
-                                    -   logType: AUDIT_LOGS
-                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-audit-logs
+                                    -   cloudwatchLogGroupArn: arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-audit-logs
                                         enabled: true
-                                    -   logType: INDEX_SLOW_LOGS
-                                        cloudwatchLogGroupArn: arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-index-logs
+                                        logType: AUDIT_LOGS
+                                    -   cloudwatchLogGroupArn: arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-index-logs
                                         enabled: true
+                                        logType: INDEX_SLOW_LOGS
                                 nodeToNodeEncryption:
                                     enabled: true
                                 region: {{ $searchRegion }}
@@ -1203,24 +1203,24 @@ spec:
                             namespace: {{ $namespace }}
                         spec:
                             forProvider:
-                                region: {{ $searchRegion }}
                                 policyDocument: |
                                     {
-                                        "Version": "2012-10-17",
                                         "Statement": [
-                                        {
-                                            "Action": [
-                                                "logs:CreateLogStream",
-                                                "logs:PutLogEvents"
-                                            ],
-                                            "Effect": "Allow",
-                                            "Principal": {
-                                                "Service": "es.amazonaws.com"
-                                            },
-                                            "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*"
-                                        }
-                                        ]
+                                            {
+                                                "Action": [
+                                                    "logs:CreateLogStream",
+                                                    "logs:PutLogEvents"
+                                                ],
+                                                "Effect": "Allow",
+                                                "Principal": {
+                                                    "Service": "es.amazonaws.com"
+                                                },
+                                                "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*"
+                                            }
+                                        ],
+                                        "Version": "2012-10-17"
                                     }
+                                region: {{ $searchRegion }}
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
