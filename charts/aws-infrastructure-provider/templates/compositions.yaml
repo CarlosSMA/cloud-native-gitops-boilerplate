@@ -1190,7 +1190,7 @@ spec:
                                             "Principal": {
                                                 "Service": "es.amazonaws.com"
                                             },
-                                            "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*",
+                                            "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*"
                                         }
                                         ]
                                     }
