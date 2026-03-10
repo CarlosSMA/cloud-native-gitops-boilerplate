@@ -1,0 +1,7 @@
+enabled: true
+region: us-east-2
+database:
+  deletionProtection: false
+search:
+  opensearch:
+    instanceCount: 2
