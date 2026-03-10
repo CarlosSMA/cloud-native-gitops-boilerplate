@@ -1,4 +1,4 @@
-enabled: true
+enabled: false
 region: us-east-2
 database:
   deletionProtection: false
