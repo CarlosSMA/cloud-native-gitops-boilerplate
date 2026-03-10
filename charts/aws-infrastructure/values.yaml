@@ -23,10 +23,8 @@ license: {}
 overlay: {}
 search:
     opensearch:
-        autoSoftwareUpdateEnabled: true
         engineVersion: OpenSearch_2.15
-        instanceCount: 1
+        instanceCount: 2
         instanceType: t3.small.search
         username: liferay_search_admin
-        volumeSize: 20
 storage: {}

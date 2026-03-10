@@ -914,6 +914,33 @@ spec:
                             managementPolicies: {{ $managementPolicies }}
                         ---
                         apiVersion: s3.aws.m.upbound.io/v1beta1
+                        kind: BucketOwnershipControls
+                        metadata:
+                            annotations:
+                                crossplane.io/external-name: {{ $storageName }}-ownership-controls-{{ $dataPlane }}
+                                gotemplating.fn.crossplane.io/composition-resource-name: storage-ownership-controls-{{ $dataPlane }}
+                            labels:
+                                app: liferay
+                                component: storage
+                                environmentId: {{ $environmentId }}
+                                projectId: {{ $projectId }}
+                            name: {{ $storageName }}-ownership-controls-{{ $dataPlane }}
+                            namespace: {{ $namespace }}
+                        spec:
+                            forProvider:
+                                bucketSelector:
+                                    matchLabels:
+                                        app: liferay
+                                        component: storage
+                                        dataPlane: {{ $dataPlane }}
+                                        environmentId: {{ $environmentId }}
+                                        projectId: {{ $projectId }}
+                                region: {{ $storageRegion }}
+                                rule:
+                                    objectOwnership: BucketOwnerPreferred
+                            managementPolicies: {{ $managementPolicies }}
+                        ---
+                        apiVersion: s3.aws.m.upbound.io/v1beta1
                         kind: BucketPublicAccessBlock
                         metadata:
                             annotations:
@@ -1091,7 +1118,7 @@ spec:
                                     enabled: true
                                 region: {{ $searchRegion }}
                                 softwareUpdateOptions:
-                                    autoSoftwareUpdateEnabled: {{ $searchSpec.autoSoftwareUpdateEnabled }}
+                                    autoSoftwareUpdateEnabled: {{ $searchSpec.autoSoftwareUpdates }}
                                 tags:
                                     Name: {{ $searchName }}
                                 vpcOptions:
@@ -1190,7 +1217,7 @@ spec:
                                             "Principal": {
                                                 "Service": "es.amazonaws.com"
                                             },
-                                            "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*"
+                                            "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*",
                                         }
                                         ]
                                     }
