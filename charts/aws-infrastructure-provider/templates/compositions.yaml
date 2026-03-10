@@ -1168,6 +1168,8 @@ spec:
                             forProvider:
                                 region: {{ $searchRegion }}
                                 retentionInDays: 7
+                            providerConfigRef:
+                                name: default
                         ---
                         apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
                         kind: ResourcePolicy
