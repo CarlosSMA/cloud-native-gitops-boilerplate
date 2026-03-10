@@ -17,13 +17,3 @@ metadata:
 spec:
     credentials:
         source: InjectedIdentity
----
-apiVersion: aws.m.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-    annotations:
-        argocd.argoproj.io/sync-wave: "-70"
-    name: default
-spec:
-    credentials:
-        source: IRSA

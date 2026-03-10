@@ -1145,7 +1145,7 @@ spec:
                                 region: {{ $searchRegion }}
                             managementPolicies: {{ $managementPolicies }}
                         ---
-                        apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
+                        apiVersion: cloudwatchlogs.aws.m.upbound.io/v1beta1
                         kind: Group
                         metadata:
                             annotations:
@@ -1156,7 +1156,7 @@ spec:
                                 region: {{ $searchRegion }}
                                 retentionInDays: 7
                         ---
-                        apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
+                        apiVersion: cloudwatchlogs.aws.m.upbound.io/v1beta1
                         kind: Group
                         metadata:
                             annotations:
@@ -1167,7 +1167,7 @@ spec:
                                 region: {{ $searchRegion }}
                                 retentionInDays: 7
                         ---
-                        apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
+                        apiVersion: cloudwatchlogs.aws.m.upbound.io/v1beta1
                         kind: ResourcePolicy
                         metadata:
                             annotations:
