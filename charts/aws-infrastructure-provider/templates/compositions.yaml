@@ -1176,7 +1176,6 @@ spec:
                             namespace: {{ $namespace }}
                         spec:
                             forProvider:
-                                policyName: OpenSearchLogPublishing
                                 region: {{ $searchRegion }}
                                 policyDocument: |
                                     {
