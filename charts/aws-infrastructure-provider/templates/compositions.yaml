@@ -1151,7 +1151,6 @@ spec:
                             annotations:
                                 gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-audit-logs
                             name: {{ $searchName }}-audit-logs
-                            namespace: {{ $namespace }}
                         spec:
                             forProvider:
                                 region: {{ $searchRegion }}
@@ -1163,13 +1162,10 @@ spec:
                             annotations:
                                 gotemplating.fn.crossplane.io/composition-resource-name: {{ $searchName }}-index-logs
                             name: {{ $searchName }}-index-logs
-                            namespace: {{ $namespace }}
                         spec:
                             forProvider:
                                 region: {{ $searchRegion }}
                                 retentionInDays: 7
-                            providerConfigRef:
-                                name: default
                         ---
                         apiVersion: cloudwatchlogs.aws.upbound.io/v1beta1
                         kind: ResourcePolicy
