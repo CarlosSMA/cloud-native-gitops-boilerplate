@@ -1175,26 +1175,26 @@ spec:
                             name: {{ $searchName }}-log-publishing-policy
                             namespace: {{ $namespace }}
                         spec:
-                        forProvider:
-                            policyName: OpenSearchLogPublishing
-                            region: {{ $searchRegion }}
-                            policyDocument: |
-                                {
-                                    "Version": "2012-10-17",
-                                    "Statement": [
+                            forProvider:
+                                policyName: OpenSearchLogPublishing
+                                region: {{ $searchRegion }}
+                                policyDocument: |
                                     {
-                                        "Action": [
-                                            "logs:CreateLogStream",
-                                            "logs:PutLogEvents"
-                                        ],
-                                        "Effect": "Allow",
-                                        "Principal": {
-                                            "Service": "es.amazonaws.com"
-                                        },
-                                        "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*",
+                                        "Version": "2012-10-17",
+                                        "Statement": [
+                                        {
+                                            "Action": [
+                                                "logs:CreateLogStream",
+                                                "logs:PutLogEvents"
+                                            ],
+                                            "Effect": "Allow",
+                                            "Principal": {
+                                                "Service": "es.amazonaws.com"
+                                            },
+                                            "Resource": "arn:aws:logs:{{ $searchRegion }}:{{ $accountId }}:log-group:{{ $searchName }}-*",
+                                        }
+                                        ]
                                     }
-                                    ]
-                                }
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
