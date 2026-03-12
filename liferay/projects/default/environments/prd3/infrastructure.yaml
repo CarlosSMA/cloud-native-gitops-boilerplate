@@ -16,7 +16,7 @@ endpoints:
     protocol: HTTPS
     tls:
       externalSecretNames:
-        - "carlos-alvarez/certificates/runray.xyz"
+        - "liferay/certificates/carlos-alvarez/runray.xyz"
 license:
-  externalSecretName: "carlos-alvarez/certificates/liferay"
+  externalSecretName: "liferay/licenses/carlos-alvarez/developer-clustered"
   targetSecretName: "developer-clustered"
