@@ -66,7 +66,7 @@ liferay-default:
                                     curl \
                                         --location \
                                         --output-dir /temp/liferay/deploy \
-                                        --output com.liferay.portal.search.opensearch2.${1}.jar-temp \
+                                        --output com.liferay.portal.search.opensearch2.${1}.jar \
                                         --retry 5 \
                                         --retry-all-errors \
                                         --retry-delay 2 \
@@ -77,7 +77,7 @@ liferay-default:
                                 then
                                     echo "Unable to download OpenSearch modules for product version ${product_version}." >&2
 
-                                    rm --force --verbose /temp/liferay/deploy/com.liferay.portal.search.opensearch2.${1}.jar-temp
+                                    rm --force --verbose /temp/liferay/deploy/com.liferay.portal.search.opensearch2.${1}.jar
 
                                     exit 0
                                 fi
