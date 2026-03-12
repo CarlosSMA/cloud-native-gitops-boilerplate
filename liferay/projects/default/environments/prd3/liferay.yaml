@@ -1,5 +1,5 @@
 liferay-default:
-  replicaCount: 0
+  replicaCount: 1
   customEnv:
     x-license:
       - name: LIFERAY_DISABLE_TRIAL_LICENSE
@@ -17,4 +17,4 @@ liferay-default:
               path: license.xml
           secretName: developer-clustered
   image:
-    tag: 2025.q1.22-lts-slim
+    tag: 2025.q1.22-lts
