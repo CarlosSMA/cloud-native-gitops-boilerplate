@@ -1,0 +1,6 @@
+dependencies:
+- name: liferay-subchart-backup-restore
+  repository: file://./charts/liferay-subchart-backup-restore
+  version: 0.1.0
+digest: sha256:4ed187f275835e8e1f78bf0e6626a424a0a20ea969279d41850305ae2a66cd07
+generated: "2026-03-12T13:00:16.500595989-03:00"
