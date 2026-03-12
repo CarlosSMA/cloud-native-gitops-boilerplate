@@ -1,7 +1,7 @@
 liferay-default:
-  replicaCount: 0
+  replicaCount: 1
   image:
-    tag: 2025.q1.20-lts
+    tag: 2025.q1.22-lts
   network:
     enabled: true
     endpointRef: runray.xyz
