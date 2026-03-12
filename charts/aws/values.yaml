@@ -107,7 +107,7 @@ liferay-default:
                                 then
                                     echo "Install successful. Skipping download."
                                 else
-                                    echo "Triggering download for modules..."
+                                    echo "Triggering download for modules."
                                     download_module "api"
                                     download_module "impl"
                                 fi
@@ -119,6 +119,11 @@ liferay-default:
                         image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
                         imagePullPolicy: {{ .image.pullPolicy }}
                         name: liferay-install-opensearch-modules
+                        securityContext:
+                            allowPrivilegeEscalation: false
+                            capabilities:
+                            drop:
+                                -   ALL
                         volumeMounts:
                             -   mountPath: /temp
                                 name: liferay-persistent-volume

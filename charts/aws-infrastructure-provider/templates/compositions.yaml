@@ -534,7 +534,6 @@ spec:
                                 copyTagsToSnapshot: true
                                 databaseInsightsMode: {{ $databaseSpec.databaseInsightsMode | quote }}
                                 dbName: lportal
-                                databaseInsightsMode: {{ $databaseSpec.databaseInsightsMode | quote }}
                                 dbSubnetGroupNameSelector:
                                     matchLabels:
                                         app: liferay
