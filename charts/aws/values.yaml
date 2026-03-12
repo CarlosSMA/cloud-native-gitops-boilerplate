@@ -77,6 +77,8 @@ liferay-default:
                                 then
                                     echo "Unable to download OpenSearch modules for product version ${product_version}." >&2
 
+                                    rm --force --verbose /temp/liferay/deploy/com.liferay.portal.search.opensearch2*
+
                                     exit 0
                                 fi
                             }
