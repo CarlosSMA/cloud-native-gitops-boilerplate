@@ -17,4 +17,4 @@ liferay-default:
               path: license.xml
           secretName: developer-clustered
   image:
-    tag: 2025.q1.22-lts
+    tag: 2025.q1.22-lts-slim
