@@ -9,3 +9,14 @@ backup:
   enabled: false
 liferay-subchart-backup-restore:
   enabled: false
+endpoints:
+  runray.xyz:
+    hostname: "*.runray.xyz"
+    port: 443
+    protocol: HTTPS
+    tls:
+      externalSecretNames:
+        - "carlos-alvarez/certificates/runray.xyz"
+license:
+  externalSecretName: "carlos-alvarez/certificates/liferay"
+  targetSecretName: "developer-clustered"
