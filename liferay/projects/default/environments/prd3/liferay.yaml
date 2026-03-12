@@ -1,4 +1,5 @@
 liferay-default:
+  enabled: false
   replicaCount: 0
   customEnv:
     x-license:
