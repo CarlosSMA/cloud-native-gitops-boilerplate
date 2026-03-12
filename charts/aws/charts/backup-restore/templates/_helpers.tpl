@@ -1,12 +1,12 @@
-{{- define "liferayAWSBackupRestore.artifactRepositoryConfigMapName" -}}
-{{- printf "%s-art-repo" (include "liferayAWSBackupRestore.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- define "liferay-aws-backup-restore.artifactRepositoryConfigMapName" -}}
+{{- printf "%s-art-repo" (include "liferay-aws-backup-restore.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.chart" -}}
+{{- define "liferay-aws-backup-restore.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.fullname" -}}
+{{- define "liferay-aws-backup-restore.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -19,34 +19,34 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.gitCredentials.externalSecretName" -}}
-{{- printf "%s-git-creds" (include "liferayAWSBackupRestore.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- define "liferay-aws-backup-restore.gitCredentials.externalSecretName" -}}
+{{- printf "%s-git-creds" (include "liferay-aws-backup-restore.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.gitCredentials.volumeMount" -}}
+{{- define "liferay-aws-backup-restore.gitCredentials.volumeMount" -}}
 volumeMounts:
     -   mountPath: /mnt/.git-credentials
         name: git-credentials
         subPath: .git-credentials
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.infraResourceBaseName" -}}
+{{- define "liferay-aws-backup-restore.infraResourceBaseName" -}}
 {{- $projectIdFull := printf "%s-%s" .Values.global.projectId .Values.global.environmentId -}}
 {{- $uidHash := printf "%s-%s-%s" .Values.global.aws.accountId .Values.global.deploymentName $projectIdFull | sha256sum | trunc 6 -}}
 {{- printf "%.18s-%s" $projectIdFull $uidHash -}}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.labels" -}}
-{{ include "liferayAWSBackupRestore.selectorLabels" . }}
+{{- define "liferay-aws-backup-restore.labels" -}}
+{{ include "liferay-aws-backup-restore.selectorLabels" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-helm.sh/chart: {{ include "liferayAWSBackupRestore.chart" . }}
+helm.sh/chart: {{ include "liferay-aws-backup-restore.chart" . }}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.name" -}}
+{{- define "liferay-aws-backup-restore.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.selectorLabels" -}}
+{{- define "liferay-aws-backup-restore.selectorLabels" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/name: {{ include "liferayAWSBackupRestore.name" . }}
+app.kubernetes.io/name: {{ include "liferay-aws-backup-restore.name" . }}
 {{- end -}}

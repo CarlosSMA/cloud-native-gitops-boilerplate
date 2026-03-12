@@ -3,11 +3,11 @@ apiVersion: v1
 data:
     {{ $defaultArtifactRepository }}: |-
         s3:
-            bucket: {{ printf "%s-argo-wf" (include "liferayAWSBackupRestore.infraResourceBaseName" .) }}
+            bucket: {{ printf "%s-argo-wf" (include "liferay-aws-backup-restore.infraResourceBaseName" .) }}
             endpoint: s3.amazonaws.com
 kind: ConfigMap
 metadata:
     annotations:
         workflows.argoproj.io/default-artifact-repository: {{ $defaultArtifactRepository }}
-    name: {{ include "liferayAWSBackupRestore.artifactRepositoryConfigMapName" . }}
+    name: {{ include "liferay-aws-backup-restore.artifactRepositoryConfigMapName" . }}
     namespace: {{ .Values.argo.artifactRepository.namespace }}

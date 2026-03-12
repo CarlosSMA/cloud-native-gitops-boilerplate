@@ -3,8 +3,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
     labels:
-    {{- include "liferayAWSBackupRestore.labels" . | nindent 8 }}
-    name: {{ include "liferayAWSBackupRestore.name" . }}
+    {{- include "liferay-aws-backup-restore.labels" . | nindent 8 }}
+    name: {{ include "liferay-aws-backup-restore.name" . }}
 rules:
     -   apiGroups: [""]
         resources: ["namespaces"]

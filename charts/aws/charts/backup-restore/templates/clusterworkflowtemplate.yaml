@@ -3,8 +3,8 @@ apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
     labels:
-        {{- include "liferayAWSBackupRestore.labels" . | nindent 8 }}
-    name: {{ include "liferayAWSBackupRestore.name" . }}
+        {{- include "liferay-aws-backup-restore.labels" . | nindent 8 }}
+    name: {{ include "liferay-aws-backup-restore.name" . }}
 spec:
     arguments:
         parameters:
@@ -12,7 +12,7 @@ spec:
     artifactGC:
         {{- .Values.argo.workflowSpec.artifactGC | toYaml | nindent 8 }}
     artifactRepositoryRef:
-        configMap: {{ include "liferayAWSBackupRestore.artifactRepositoryConfigMapName" . }}
+        configMap: {{ include "liferay-aws-backup-restore.artifactRepositoryConfigMapName" . }}
     entrypoint: main
     podGC:
         {{- .Values.argo.workflowSpec.podGC | toYaml | nindent 8 }}
@@ -94,8 +94,8 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.gitCheckout" . | nindent 20 }}
-                {{- include "liferayAWSBackupRestore.gitCredentials.volumeMount" . | nindent 16 }}
+                    {{- include "liferay-aws-backup-restore.script.gitCheckout" . | nindent 20 }}
+                {{- include "liferay-aws-backup-restore.gitCredentials.volumeMount" . | nindent 16 }}
         -   container:
                 args:
                     -   "s3"
@@ -136,7 +136,7 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.getCurrentInfrastructureState" . | nindent 20 }}
+                    {{- include "liferay-aws-backup-restore.script.getCurrentInfrastructureState" . | nindent 20 }}
         -   name: get-peer-recovery-points
             outputs:
                 parameters:
@@ -152,7 +152,7 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.getPeerRecoveryPoints" . | nindent 20 }}
+                    {{- include "liferay-aws-backup-restore.script.getPeerRecoveryPoints" . | nindent 20 }}
         -   inputs:
                 artifacts:
                     -   name: git-repository
@@ -168,8 +168,8 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.gitPull" . | nindent 20 }}
-                {{- include "liferayAWSBackupRestore.gitCredentials.volumeMount" . | nindent 16 }}
+                    {{- include "liferay-aws-backup-restore.script.gitPull" . | nindent 20 }}
+                {{- include "liferay-aws-backup-restore.gitCredentials.volumeMount" . | nindent 16 }}
                 workingDir: /src
         -   inputs:
                 artifacts:
@@ -184,8 +184,8 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.gitPush" . | nindent 20 }}
-                {{- include "liferayAWSBackupRestore.gitCredentials.volumeMount" . | nindent 16 }}
+                    {{- include "liferay-aws-backup-restore.script.gitPush" . | nindent 20 }}
+                {{- include "liferay-aws-backup-restore.gitCredentials.volumeMount" . | nindent 16 }}
                 workingDir: /src
         -   container:
                 args:
@@ -327,7 +327,7 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.restoreS3Bucket" . | nindent 20 }}
+                    {{- include "liferay-aws-backup-restore.script.restoreS3Bucket" . | nindent 20 }}
         -   name: restart-liferay
             steps:
                 -   -   name: kubectl-rollout-restart
@@ -341,7 +341,7 @@ spec:
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
-                    {{- include "liferayAWSBackupRestore.script.waitObservedGeneration" . | nindent 20 }}
+                    {{- include "liferay-aws-backup-restore.script.waitObservedGeneration" . | nindent 20 }}
         -   container:
                 args:
                     -   --indent
@@ -372,6 +372,6 @@ spec:
     volumes:
         -   name: git-credentials
             secret:
-                secretName: {{ include "liferayAWSBackupRestore.gitCredentials.secretName" . }}
+                secretName: {{ include "liferay-aws-backup-restore.gitCredentials.secretName" . }}
     {{- end -}}
 {{- end -}}

@@ -1,4 +1,4 @@
-{{- define "liferayAWSBackupRestore.script.getCurrentInfrastructureState" -}}
+{{- define "liferay-aws-backup-restore.script.getCurrentInfrastructureState" -}}
 #!/bin/sh
 
 set -eu
@@ -62,7 +62,7 @@ function main {
 main
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.script.getPeerRecoveryPoints" -}}
+{{- define "liferay-aws-backup-restore.script.getPeerRecoveryPoints" -}}
 #!/bin/sh
 
 set -eu
@@ -99,7 +99,7 @@ function main {
 		aws \
 			backup \
 			describe-recovery-point \
-			--backup-vault-name "{{ printf "%s-backup-vault" (include "liferayAWSBackupRestore.infraResourceBaseName" .) }}" \
+			--backup-vault-name "{{ printf "%s-backup-vault" (include "liferay-aws-backup-restore.infraResourceBaseName" .) }}" \
 			--recovery-point-arn "{{ "{{" }}workflow.parameters.recovery-point-arn}}")
 
 	local creation_date
@@ -131,7 +131,7 @@ function main {
 		aws \
 			backup \
 			list-recovery-points-by-backup-vault \
-			--backup-vault-name "{{ printf "%s-backup-vault" (include "liferayAWSBackupRestore.infraResourceBaseName" .) }}" \
+			--backup-vault-name "{{ printf "%s-backup-vault" (include "liferay-aws-backup-restore.infraResourceBaseName" .) }}" \
 			--by-created-after "${by_created_after}" \
 			--by-created-before "${by_created_before}" \
 			| jq --arg creation_date "${creation_date}" "[.RecoveryPoints[] | select(.CreationDate == \$creation_date)]")
@@ -166,7 +166,7 @@ function main {
 main
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.script.gitCheckout" -}}
+{{- define "liferay-aws-backup-restore.script.gitCheckout" -}}
 #!/bin/sh
 
 set -eu
@@ -187,7 +187,7 @@ function main {
 main
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.script.gitPull" -}}
+{{- define "liferay-aws-backup-restore.script.gitPull" -}}
 #!/bin/sh
 
 set -eu
@@ -203,7 +203,7 @@ function main {
 main
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.script.gitPush" -}}
+{{- define "liferay-aws-backup-restore.script.gitPush" -}}
 #!/bin/sh
 
 set -eu
@@ -230,7 +230,7 @@ function main {
 main
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.script.restoreS3Bucket" -}}
+{{- define "liferay-aws-backup-restore.script.restoreS3Bucket" -}}
 #!/bin/sh
 
 set -eu
@@ -242,7 +242,7 @@ function main {
 		aws \
 			backup \
 			start-restore-job \
-			--iam-role-arn "{{ printf "arn:aws:iam::%s:role/%s-backup-service-role" .Values.global.aws.accountId (include "liferayAWSBackupRestore.infraResourceBaseName" .) }}" \
+			--iam-role-arn "{{ printf "arn:aws:iam::%s:role/%s-backup-service-role" .Values.global.aws.accountId (include "liferay-aws-backup-restore.infraResourceBaseName" .) }}" \
 			--metadata "DestinationBucketName={{ "{{" }}inputs.parameters.s3-bucket-id}},NewBucket=false" \
 			--recovery-point-arn "{{ "{{" }}inputs.parameters.s3-recovery-point-arn}}" \
 			--resource-type "S3" \
@@ -296,7 +296,7 @@ function main {
 main
 {{- end -}}
 
-{{- define "liferayAWSBackupRestore.script.waitObservedGeneration" -}}
+{{- define "liferay-aws-backup-restore.script.waitObservedGeneration" -}}
 #!/bin/sh
 
 set -eu
