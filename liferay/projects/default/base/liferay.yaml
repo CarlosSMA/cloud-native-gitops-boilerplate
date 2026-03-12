@@ -1,2 +1,2 @@
 liferay-default:
-  enabled: false
+  enabled: true
