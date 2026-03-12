@@ -309,9 +309,6 @@ volumeMounts:
     -   mountPath: /opt/liferay/data
         name: liferay-persistent-volume
         subPath: liferay/data
-    -   mountPath: /opt/liferay/deploy
-        name: liferay-persistent-volume
-        subPath: liferay/deploy
     -   mountPath: /opt/liferay/glowroot
         name: liferay-persistent-volume
         subPath: liferay/glowroot
