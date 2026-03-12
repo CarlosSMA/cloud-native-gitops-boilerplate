@@ -84,7 +84,9 @@ liferay-default:
                             }
 
                             function main {
+                                ls -l /temp/liferay/deploy
                                 mkdir --parents /temp/liferay/deploy
+                                ls -l /temp/liferay/deploy
 
                                 download_module "api"
                                 download_module "impl"
