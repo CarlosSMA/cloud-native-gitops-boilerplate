@@ -156,7 +156,7 @@ liferay-default:
         -   com.liferay.portal.search.learning.to.rank.impl
     resources:
         limits:
-            cpu: 4000m
+            cpu: 4001m
             memory: 12Gi
         requests:
             cpu: 2000m
