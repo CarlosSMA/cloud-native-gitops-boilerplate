@@ -5,3 +5,5 @@ database:
 search:
   opensearch:
     instanceCount: 2
+backup:
+  enabled: false
