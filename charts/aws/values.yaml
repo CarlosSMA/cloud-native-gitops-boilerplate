@@ -84,10 +84,11 @@ liferay-default:
                             function main {
                                 mkdir --parents /temp/liferay/deploy
 
-                                rm --force --verbose "/temp/osgi/modules/com.liferay.portal.search.opensearch2"*
-
                                 download_module "api"
                                 download_module "impl"
+
+                                rm --force --verbose "/temp/osgi/modules/com.liferay.portal.search.opensearch2"*
+
                             }
 
                             main
