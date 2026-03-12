@@ -62,11 +62,17 @@ liferay-default:
                                 local url="https://releases.liferay.com/opensearch2/dxp/${product_version}/com.liferay.portal.search.opensearch2.${1}.jar"
                                 {{- end }}
 
+                                if [ -f "/temp/liferay/deploy/com.liferay.portal.search.opensearch2.${1}.jar" ]
+                                then
+                                    echo "Module ${final_file} already exists, skipping download."
+                                    return 0
+                                fi
+
                                 local http_code=$( \
                                     curl \
                                         --location \
                                         --output-dir /temp/liferay/deploy \
-                                        --output com.liferay.portal.search.opensearch2.${1}.jar-temp \
+                                        --output com.liferay.portal.search.opensearch2.${1}.jar \
                                         --retry 5 \
                                         --retry-all-errors \
                                         --retry-delay 2 \
@@ -77,10 +83,13 @@ liferay-default:
                                 then
                                     echo "Unable to download OpenSearch modules for product version ${product_version}." >&2
 
-                                    rm --force --verbose /temp/liferay/deploy/com.liferay.portal.search.opensearch2.${1}.jar-temp
+                                    rm --force --verbose /temp/liferay/deploy/com.liferay.portal.search.opensearch2.${1}.jar
 
                                     exit 0
                                 fi
+
+                                mv "${target_dir}/${temp_file}" "${target_dir}/${final_file}"
+                                echo "Successfully downloaded ${final_file}."
                             }
 
                             function main {
