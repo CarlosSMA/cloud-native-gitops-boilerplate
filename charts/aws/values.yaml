@@ -84,12 +84,19 @@ liferay-default:
                             }
 
                             function install_existing_opensearch_modules {
-                                if ls /opt/liferay/deploy/com.liferay.portal.search.opensearch2* 1>/dev/null 2>&1
-                                then
-                                    cp --verbose /opt/liferay/deploy/com.liferay.portal.search.opensearch2* /temp/liferay/deploy
+                                local found=false
 
+                                for file in /opt/liferay/deploy/com.liferay.portal.search.opensearch2*; do
+                                    if [ -f "$file" ]; then
+                                        found=true
+                                        break
+                                    fi
+                                done
+
+                                if [ "$found" = true ]; then
+                                    echo "Found existing OpenSearch modules. Copying..."
+                                    cp --verbose /opt/liferay/deploy/com.liferay.portal.search.opensearch2* /temp/liferay/deploy
                                     return 0
-                                fi
                             }
 
                             function main {
