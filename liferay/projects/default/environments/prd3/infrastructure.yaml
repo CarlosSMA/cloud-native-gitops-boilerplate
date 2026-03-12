@@ -7,3 +7,5 @@ search:
     instanceCount: 2
 backup:
   enabled: false
+liferay-subchart-backup-restore:
+  enabled: false
