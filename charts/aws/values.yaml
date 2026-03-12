@@ -93,10 +93,12 @@ liferay-default:
                                     fi
                                 done
 
-                                if [ "$found" = true ]; then
+                                if [ "$found" = true ]
+                                then
                                     echo "Found existing OpenSearch modules. Copying..."
                                     cp --verbose /opt/liferay/deploy/com.liferay.portal.search.opensearch2* /temp/liferay/deploy
                                     return 0
+                                fi
                             }
 
                             function main {
