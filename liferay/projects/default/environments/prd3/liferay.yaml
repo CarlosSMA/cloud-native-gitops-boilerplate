@@ -1,5 +1,5 @@
 liferay-default:
-  replicaCount: 1
+  replicaCount: 0
   customEnv:
     x-license:
       - name: LIFERAY_DISABLE_TRIAL_LICENSE
