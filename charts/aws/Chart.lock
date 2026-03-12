@@ -1,6 +1,9 @@
 dependencies:
+- name: liferay-aws-backup-restore
+  repository: file://./charts/backup-restore
+  version: 0.1.0
 - name: liferay-default
   repository: file://../default
-  version: 0.4.0
-digest: sha256:728e8b464a16be2ec5b8e84ce66d46e3ad1cdba25076dae6817c37fdb1ef0aa7
-generated: "2026-03-12T12:58:26.555095872-03:00"
+  version: 0.2.1
+digest: sha256:7a50a94aeb59cb4b0341ed3922b75cd8a327303261c42c55a8e38c853020a446
+generated: "2026-02-09T12:44:37.180616738-03:00"

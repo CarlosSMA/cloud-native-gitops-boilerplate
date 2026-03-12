@@ -13,7 +13,7 @@ gateway:
     internetFacing: true
     namespace: envoy-gateway-system
 liferay-subchart-backup-restore:
-    enabled: false
+    enabled: true
 search:
     opensearch:
         autoSoftwareUpdateEnabled: true
