@@ -48,8 +48,8 @@ customInitContainers:
                     securityContext:
                         allowPrivilegeEscalation: false
                         capabilities:
-                        drop:
-                            -   ALL
+                            drop:
+                                -   ALL
                     {{- if and .overlay .overlay.enabled }}
                     volumeMounts:
                         -   mountPath: /mnt/liferay/overlay
@@ -129,8 +129,8 @@ customInitContainers:
                     securityContext:
                         allowPrivilegeEscalation: false
                         capabilities:
-                        drop:
-                            -   ALL
+                            drop:
+                                -   ALL
                     volumeMounts:
                         -   mountPath: /temp
                             name: liferay-persistent-volume
@@ -159,8 +159,8 @@ customInitContainers:
                     securityContext:
                         allowPrivilegeEscalation: false
                         capabilities:
-                        drop:
-                            -   ALL
+                            drop:
+                                -   ALL
 customLabels:
     origin: liferay-cloud
 customPorts: {}
@@ -240,8 +240,8 @@ podLabels: {}
 podSecurityContext:
     allowPrivilegeEscalation: false
     capabilities:
-    drop:
-        -   ALL
+        drop:
+            -   ALL
     fsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000

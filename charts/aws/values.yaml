@@ -122,8 +122,8 @@ liferay-default:
                         securityContext:
                             allowPrivilegeEscalation: false
                             capabilities:
-                            drop:
-                                -   ALL
+                                drop:
+                                    -   ALL
                         volumeMounts:
                             -   mountPath: /temp
                                 name: liferay-persistent-volume
