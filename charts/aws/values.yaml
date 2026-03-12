@@ -124,6 +124,8 @@ liferay-default:
                             capabilities:
                                 drop:
                                     -   ALL
+                            seccompProfile:
+                                type: RuntimeDefault
                         volumeMounts:
                             -   mountPath: /temp
                                 name: liferay-persistent-volume

@@ -50,6 +50,8 @@ customInitContainers:
                         capabilities:
                             drop:
                                 -   ALL
+                        seccompProfile:
+                            type: RuntimeDefault
                     {{- if and .overlay .overlay.enabled }}
                     volumeMounts:
                         -   mountPath: /mnt/liferay/overlay
@@ -131,6 +133,8 @@ customInitContainers:
                         capabilities:
                             drop:
                                 -   ALL
+                        seccompProfile:
+                            type: RuntimeDefault
                     volumeMounts:
                         -   mountPath: /temp
                             name: liferay-persistent-volume
@@ -161,6 +165,8 @@ customInitContainers:
                         capabilities:
                             drop:
                                 -   ALL
+                        seccompProfile:
+                            type: RuntimeDefault
 customLabels:
     origin: liferay-cloud
 customPorts: {}
@@ -245,6 +251,8 @@ podSecurityContext:
     fsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
+    seccompProfile:
+        type: RuntimeDefault
 portalBundleDenyList: []
 portalComponentDenyList: []
 portalProperties:
@@ -278,6 +286,8 @@ securityContext:
     capabilities:
         drop:
             -   ALL
+    seccompProfile:
+        type: RuntimeDefault
     readOnlyRootFilesystem: true
 service:
     annotations: {}
