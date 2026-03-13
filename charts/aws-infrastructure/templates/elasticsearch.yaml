@@ -57,6 +57,7 @@ spec:
                                         -   ALL
                                 seccompProfile:
                                     type: RuntimeDefault
+                                runAsNonRoot: true
             volumeClaimTemplates:
                 -   metadata:
                         name: elasticsearch-data
