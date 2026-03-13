@@ -44,20 +44,15 @@ spec:
                         -   command:
                                 -   sh
                                 -   -c
-                                -   sysctl -w vm.max_map_count={{ $search.maxMapCount }}
-                            name: configure-memory-map
-                            securityContext:
-                                privileged: true
-                                runAsUser: 0
-                        -   command:
-                                -   sh
-                                -   -c
                                 -   |
                                     elasticsearch-plugin \
                                         install \
                                         --batch \
                                         analysis-{icu,kuromoji,smartcn,stempel}
                             name: install-plugins
+                            securityContext:
+                                seccompProfile:
+                                    type: RuntimeDefault
             volumeClaimTemplates:
                 -   metadata:
                         name: elasticsearch-data
