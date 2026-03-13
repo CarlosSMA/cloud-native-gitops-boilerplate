@@ -1,10 +1,33 @@
 liferay-default:
   enabled: false
   replicaCount: 1
+  portalBundleDenyList: {}
+  configmap:
+    data:
+      com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config: |
+        remoteClusterConnectionId="REMOTE"
+      com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config: |
+        active=B"true"
+        authenticationEnabled=B"true"
+        connectionId="REMOTE"
+        httpSSLEnabled=B"false"
+        networkHostAddresses=["$ELASTICSEARCH_URL"]
+        password="$ELASTICSEARCH_PASSWORD"
+        username="$ELASTICSEARCH_DEFAULT_USERNAME"
   customEnv:
     x-license:
       - name: LIFERAY_DISABLE_TRIAL_LICENSE
         value: "true"
+    x-elasticsearch-password:
+      - name: ELASTICSEARCH_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: default-prd3-infra-es-es-elastic-user
+            key: elastic
+  customEnvFrom:
+    x-elasticsearch:
+    -   secretRef:
+          name: elasticsearch-connection-details
   customVolumeMounts:
     x-license:
       - mountPath: /etc/liferay/mount/files/deploy
