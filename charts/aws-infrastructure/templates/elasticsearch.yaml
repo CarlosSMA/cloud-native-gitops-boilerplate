@@ -19,6 +19,7 @@ spec:
                         runAsNonRoot: true
                         seccompProfile:
                             type: RuntimeDefault
+                        fsGroup: 1000
                     containers:
                         -   env:
                             {{- if or $search.env $search.customEnv }}
