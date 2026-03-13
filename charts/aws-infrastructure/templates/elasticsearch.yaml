@@ -102,6 +102,7 @@ spec:
         spec:
             containers:
                 -   name: bootstraper
+                    image: busybox:1.36
                     command:
                         -  sh
                         -   -c
