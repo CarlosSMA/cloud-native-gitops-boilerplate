@@ -5,6 +5,8 @@ database:
 search:
   opensearch:
     instanceCount: 2
+  elasticsearch:
+    enabled: true
 backup:
   enabled: false
 liferay-subchart-backup-restore:
