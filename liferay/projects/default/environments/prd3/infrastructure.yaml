@@ -10,6 +10,7 @@ search:
     version: 8.12.0
     nodeCount: 1
     volumeSize: 5
+    maxMapCount: 262144
 backup:
   enabled: false
 liferay-subchart-backup-restore:
