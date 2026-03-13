@@ -16,13 +16,9 @@ spec:
             podTemplate:
                 spec:
                     securityContext:
-                        allowPrivilegeEscalation: false
-                        capabilities:
-                            drop:
-                                -   ALL
+                        runAsNonRoot: true
                         seccompProfile:
                             type: RuntimeDefault
-                        runAsNonRoot: true
                     containers:
                         -   env:
                             {{- if or $search.env $search.customEnv }}
@@ -47,7 +43,12 @@ spec:
                                 requests:
                                     cpu: 500m
                                     memory: 4Gi
-                            {{- end }}
+                                {{- end }}
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            - ALL
                     initContainers:
                         -   command:
                                 -   sh
