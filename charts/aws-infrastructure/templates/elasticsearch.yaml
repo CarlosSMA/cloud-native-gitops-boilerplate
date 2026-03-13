@@ -90,7 +90,7 @@ apiVersion: v1
 kind: DaemonSet
 metadata:
     name: elasticsearch-bootstraper
-    namespace: elasticsearch-bootstrap
+    namespace: configure-elasticsearch-memory-map
 spec:
     selector:
         matchLabels:
