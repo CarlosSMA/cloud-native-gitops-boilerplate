@@ -8,6 +8,7 @@ search:
   elasticsearch:
     enabled: true
     version: 8.12.0
+    nodeCount: 1
 backup:
   enabled: false
 liferay-subchart-backup-restore:
