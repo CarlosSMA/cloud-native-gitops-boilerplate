@@ -7,6 +7,7 @@ search:
     instanceCount: 2
   elasticsearch:
     enabled: true
+    version: 8.12.0
 backup:
   enabled: false
 liferay-subchart-backup-restore:
