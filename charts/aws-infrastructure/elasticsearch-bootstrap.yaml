@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+    labels:
+        name: configure-elasticsearch-memory-map
+    name: configure-elasticsearch-memory-map
+---
+apiVersion: v1
+kind: DaemonSet
+metadata:
+    name: elasticsearch-bootstraper
+    namespace: elasticsearch-bootstrap
+spec:
+    selector:
+        matchLabels:
+            app: elasticsearch-bootstrap
+    template:
+        metadata:
+            labels:
+                app: elasticsearch-bootstrap
+        spec:
+            containers:
+                -   name: bootstraper
+                    command:
+                        -  sh
+                        -   -c
+                        -   sysctl -w vm.max_map_count=$ELASTICSEARCH_MAX_MEMORY_MAP
+                    envFrom:
+                        - configMapRef:
+                            name: elasticsearch-boostrap-config
+                    securityContext:
+                        privileged: true
+                        runAsUser: 0

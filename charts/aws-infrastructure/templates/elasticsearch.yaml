@@ -78,4 +78,13 @@ stringData:
     ELASTICSEARCH_DEFAULT_USERNAME: elastic
     ELASTICSEARCH_URL: http://{{ include "elasticsearch.name" . }}-es-http.{{ .Release.Namespace }}.svc:9200
 type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    labels:
+        name: elasticsearch-boostrap-config
+    name: elasticsearch-boostrap-config
+data:
+    ELASTICSEARCH_MAX_MEMORY_MAP: {{ $search.maxMapCount }}
 {{- end -}}
