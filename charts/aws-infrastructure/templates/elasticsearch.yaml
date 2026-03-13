@@ -107,9 +107,6 @@ spec:
                         -  sh
                         -   -c
                         -   sysctl -w vm.max_map_count={{ $search.maxMapCount | quote }}
-                    envFrom:
-                        - configMapRef:
-                            name: elasticsearch-boostrap-config
                     securityContext:
                         privileged: true
                         runAsUser: 0
