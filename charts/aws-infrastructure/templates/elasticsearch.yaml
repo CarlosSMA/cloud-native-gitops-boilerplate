@@ -51,6 +51,10 @@ spec:
                                         analysis-{icu,kuromoji,smartcn,stempel}
                             name: install-plugins
                             securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                    drop:
+                                        -   ALL
                                 seccompProfile:
                                     type: RuntimeDefault
             volumeClaimTemplates:
