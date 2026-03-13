@@ -15,6 +15,14 @@ spec:
             name: default
             podTemplate:
                 spec:
+                    securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                -   ALL
+                        seccompProfile:
+                            type: RuntimeDefault
+                        runAsNonRoot: true
                     containers:
                         -   env:
                             {{- if or $search.env $search.customEnv }}
