@@ -86,7 +86,7 @@ metadata:
         name: configure-elasticsearch-memory-map
     name: configure-elasticsearch-memory-map
 ---
-apiVersion: v1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
     name: elasticsearch-bootstraper
