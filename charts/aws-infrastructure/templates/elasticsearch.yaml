@@ -86,5 +86,5 @@ metadata:
         name: elasticsearch-boostrap-config
     name: elasticsearch-boostrap-config
 data:
-    ELASTICSEARCH_MAX_MEMORY_MAP: {{ $search.maxMapCount }}
+    ELASTICSEARCH_MAX_MEMORY_MAP: {{ $search.maxMapCount | quote }}
 {{- end -}}
