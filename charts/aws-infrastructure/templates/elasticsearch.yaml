@@ -100,13 +100,17 @@ spec:
             labels:
                 app: elasticsearch-bootstrap
         spec:
+            nodeSelector:
+                kubernetes.io/os: linux
             containers:
                 -   name: bootstraper
                     image: busybox:1.36
                     command:
                         -  sh
                         -   -c
-                        -   sysctl -w vm.max_map_count={{ $search.maxMapCount | quote }}
+                        -   |
+                            sysctl -w vm.max_map_count={{ $search.maxMapCount | quote }}
+                            sleep infinity
                     securityContext:
                         privileged: true
                         runAsUser: 0
