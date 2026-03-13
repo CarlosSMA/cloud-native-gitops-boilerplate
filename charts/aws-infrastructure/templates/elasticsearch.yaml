@@ -44,11 +44,11 @@ spec:
                                     cpu: 500m
                                     memory: 4Gi
                                 {{- end }}
-                                securityContext:
-                                    allowPrivilegeEscalation: false
-                                    capabilities:
-                                        drop:
-                                            - ALL
+                            securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                    drop:
+                                        - ALL
                     initContainers:
                         -   command:
                                 -   sh
