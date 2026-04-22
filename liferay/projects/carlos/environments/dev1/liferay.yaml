@@ -1,4 +1,4 @@
 liferay-default:
-  replicaCount: 0
+  replicaCount: 1
   image:
     tag: 2025.q1.22-lts
