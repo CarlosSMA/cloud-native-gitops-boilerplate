@@ -1,0 +1,156 @@
+---
+# Source: liferay-aws-infrastructure/templates/elasticsearch.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+    labels:
+        name: test-elasticsearch
+        pod-security.kubernetes.io/enforce: restricted
+    name: test-elasticsearch
+---
+# Source: liferay-aws-infrastructure/templates/elasticsearch.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: elasticsearch-connection-details
+    namespace: test-elasticsearch
+stringData:
+    ELASTICSEARCH_DEFAULT_PASSWORD_SECRET_NAME: "release-name-es-es-elastic-user"
+    ELASTICSEARCH_DEFAULT_USERNAME: elastic
+    ELASTICSEARCH_URL: http://release-name-es-es-http.test-elasticsearch.svc:9200
+type: Opaque
+---
+# Source: liferay-aws-infrastructure/templates/elasticsearch.yaml
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+    annotations:
+        instrumentation.opentelemetry.io/inject-dotnet: "false"
+        instrumentation.opentelemetry.io/inject-java: "false"
+        instrumentation.opentelemetry.io/inject-nodejs: "false"
+        instrumentation.opentelemetry.io/inject-python: "false"
+        sidecar.opentelemetry.io/inject: "false"
+    name: release-name-es
+    namespace: test-elasticsearch
+spec:
+    http:
+        tls:
+            selfSignedCertificate:
+                disabled: true
+    nodeSets:
+        -   count: 1
+            name: default
+            podTemplate:
+                metadata:
+                    annotations:
+                        instrumentation.opentelemetry.io/inject-dotnet: "false"
+                        instrumentation.opentelemetry.io/inject-java: "false"
+                        instrumentation.opentelemetry.io/inject-nodejs: "false"
+                        instrumentation.opentelemetry.io/inject-python: "false"
+                        sidecar.opentelemetry.io/inject: "false"
+                spec:
+                    containers:
+                        -   env:
+                                -   name:   ES_JAVA_OPTS
+                                    value: -Xms4g -Xmx4g
+                            name: elasticsearch
+                            resources:
+                                limits:
+                                    cpu: 1000m
+                                    memory: 8Gi
+                                requests:
+                                    cpu: 500m
+                                    memory: 4Gi
+                            securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                  drop:
+                                  - ALL
+                                privileged: false
+                                readOnlyRootFilesystem: false
+                    initContainers:
+                        -   command:
+                                -   sh
+                                -   -c
+                                -   |
+                                    elasticsearch-plugin \
+                                        install \
+                                        --batch \
+                                        analysis-{icu,kuromoji,smartcn,stempel}
+                            name: install-plugins
+                            securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                  drop:
+                                  - ALL
+                                privileged: false
+                                readOnlyRootFilesystem: false
+                    securityContext:
+                        fsGroup: 1000
+                        runAsGroup: 1000
+                        runAsNonRoot: true
+                        runAsUser: 1000
+                        seccompProfile:
+                          type: RuntimeDefault
+            volumeClaimTemplates:
+                -   metadata:
+                        name: elasticsearch-data
+                    spec:
+                        accessModes:
+                            -   ReadWriteOnce
+                        resources:
+                            requests:
+                                storage: 10Gi
+    version: 8.12.0
+---
+# Source: liferay-aws-infrastructure/templates/liferayinfrastructure.yaml
+apiVersion: aws.liferay.com/v1alpha1
+kind: LiferayInfrastructure
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: ServerSideApply=true
+        argocd.argoproj.io/sync-wave: "-20"
+    name: release-name
+    namespace: test
+spec:
+    backup: 
+        enabled: false
+        rules:
+        - retentionDays: 30
+          ruleName: daily-backups
+          schedule: cron(0 5 * * ? *)
+          startWindow: 60
+    cmk: 
+        enabled: false
+    commonTags:
+        EnvironmentId: 
+        ProjectId: 
+    database: 
+        autoMinorVersionUpgrade: true
+        databaseInsightsMode: standard
+        deletionProtection: true
+        engine: postgres
+        engineVersion: "16.11"
+        instanceClass: db.t3.medium
+        iops: 12000
+        multiAz: false
+        storageGB: 20
+        storageThroughput: 500
+        username: liferay_database_admin
+    environmentId: 
+    forceDestroy: false
+    orphanOnDelete: false
+    overlay: 
+        {}
+    projectId: 
+    region: 
+    search:
+        opensearch: 
+            autoSoftwareUpdateEnabled: true
+            engineVersion: OpenSearch_2.15
+            instanceCount: 2
+            instanceType: t3.small.search
+            username: liferay_search_admin
+            volumeSizeGB: 20
+    storage: 
+        {}
