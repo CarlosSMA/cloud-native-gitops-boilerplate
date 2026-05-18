@@ -1,5 +1,7 @@
 liferay-default:
-  replicaCount: 1
+  networkPolicy:
+    enabled: false
+  replicaCount: 0
   image:
     tag: 2025.q1.22-lts
   customEnv:
