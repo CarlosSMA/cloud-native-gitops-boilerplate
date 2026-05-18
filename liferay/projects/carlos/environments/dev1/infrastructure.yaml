@@ -1,3 +1,6 @@
 enabled: false
+search:
+  elasticsearch:
+    enabled: false
 database:
   deletionProtection: false
