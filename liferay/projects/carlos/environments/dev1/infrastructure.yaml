@@ -1,6 +1,7 @@
-enabled: false
+enabled: true
 search:
   elasticsearch:
-    enabled: false
+    enabled: true
 database:
   deletionProtection: false
+region: "us-central1"
