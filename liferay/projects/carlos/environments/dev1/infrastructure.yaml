@@ -1,0 +1,10 @@
+enabled: false
+search:
+  elasticsearch:
+    enabled: false
+database:
+  deletionProtection: false
+region: "us-central1"
+license:
+   externalSecretName: "liferay-licenses-liferay-license-xml"
+   targetSecretName: "liferay-license"
