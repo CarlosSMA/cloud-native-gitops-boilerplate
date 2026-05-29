@@ -4,7 +4,7 @@ search:
     enabled: false
 database:
   deletionProtection: false
-region: "us-central1"
+region: "eu-central-1"
 license:
    externalSecretName: "liferay-licenses-liferay-license-xml"
    targetSecretName: "liferay-license"
