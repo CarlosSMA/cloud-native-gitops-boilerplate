@@ -1,6 +1,7 @@
 liferay-default:
     marketplace:
         enabled: true
+        storageClassName: standard-rwx-vpc
     image:
         tag: 2025.q1.22-lts
     replicaCount: 1
