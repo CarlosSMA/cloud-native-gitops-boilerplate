@@ -1,6 +1,0 @@
-liferay-default:
-    marketplace:
-        enabled: false
-    image:
-        tag: 2025.q1.22-lts
-    replicaCount: 1
