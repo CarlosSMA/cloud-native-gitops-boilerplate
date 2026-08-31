@@ -7,4 +7,4 @@ liferay-default:
     autoscaling:
         enabled: true
         keda:
-            prometheusServerAddress: https://lcd52751v2-amw-d2hxefdghhb2d5e4.eastus.prometheus.monitor.azure.com
+            prometheusServerAddress: https://lcd52751v2-amw-c3abhvanadb4axb3.eastus.prometheus.monitor.azure.com
