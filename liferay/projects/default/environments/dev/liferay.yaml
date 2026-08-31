@@ -8,3 +8,5 @@ liferay-default:
         enabled: true
         keda:
             prometheusServerAddress: https://lcd52751v2-amw-c3abhvanadb4axb3.eastus.prometheus.monitor.azure.com
+    customInitContainers:
+        x-wait-for-elasticsearch: null
