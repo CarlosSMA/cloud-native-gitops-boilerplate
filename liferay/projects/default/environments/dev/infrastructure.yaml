@@ -1,2 +1,5 @@
 enabled: false
 region: eastus
+search:
+    elasticsearch:
+        enabled: true
