@@ -1,0 +1,3 @@
+enabled: true
+license:
+    externalSecretKey: liferay-licenses-default-dev

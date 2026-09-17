@@ -1,0 +1,7 @@
+liferay-default:
+    image:
+        tag: 2026.q1.8-lts
+    licensing:
+        enabled: true
+        secretName: liferay-license
+    replicaCount: 1
