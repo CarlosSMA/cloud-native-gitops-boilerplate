@@ -4,3 +4,5 @@ liferay-default:
     licensing:
         enabled: true
         secretName: liferay-default-entitlements
+    search:
+        engine: elasticsearch

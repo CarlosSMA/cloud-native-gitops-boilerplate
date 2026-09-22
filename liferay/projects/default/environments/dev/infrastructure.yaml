@@ -2,3 +2,8 @@ enabled: true
 license:
     externalSecretName: carlos-dxp
     targetSecretName: liferay-default-entitlements
+search:
+    elasticsearch:
+        enabled: true
+    opensearch:
+        enabled: false
